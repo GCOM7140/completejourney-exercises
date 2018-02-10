@@ -1,20 +1,21 @@
 Data Transformation Exercises
 ================
 
-The following 5 questions are based on concepts covered in Chapters 4-6 in R4DS and can be answered using The Complete Journey data. First, load the data by loading the `completejourney` package.
+The following 5 questions are based on concepts covered in Chapters 4-6 in R4DS and can be answered using The Complete Journey data. Start by loading the `tidyverse` and the `completejourney` package.
 
 ``` r
+library(tidyverse)
 library(completejourney)
 ```
 
 ------------------------------------------------------------------------
 
-**Question 1**: Return a 2-column dataset sorted by basket showing the most expensive item first. Hint: Sort by `basket_id` and then by `sales_value` and return only those two variables.
+**Question 1**: Using `transaction_data` create a 2-column dataset sorted by basket showing the most expensive item first. Hint: Sort by `basket_id` and then by `sales_value` and return only those two variables.
 *This question grows your ability to use [`arrange()`](http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange) and [`select()`](http://r4ds.had.co.nz/transform.html#select-columns-with-select).*
 
 ------------------------------------------------------------------------
 
-**Question 2**: Calculate the regular prices before loyalty and coupon discounts and the loyalty prices according to this logic:
+**Question 2**: In `transaction_data` add regular prices before loyalty and coupon discounts and the loyalty prices according to this logic:
 
 -   `regular_price = (sales_value - (retail_disc + coupon_match_disc)) / quantity`
 -   `loyalty_price = regular_price + (retail_disc / quantity)`
@@ -23,7 +24,7 @@ library(completejourney)
 
 ------------------------------------------------------------------------
 
-**Question 3**: The dataset covers 92,339 unique product ids. How many unique products (not transactions!) had a regular price of one dollar or less? How is the count different for loyalty cardholders? Hint: After filtering select the product id column and count unique products using the `n_distinct()` function.
+**Question 3**: The `transaction_data` covers 92,339 unique product ids. How many unique products (not transactions!) had a regular price of one dollar or less? How is the count different for loyalty cardholders? Hint: After filtering select the product id column and count unique products using the `n_distinct()` function.
 *This question grows your ability to use [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter).*
 
 ------------------------------------------------------------------------

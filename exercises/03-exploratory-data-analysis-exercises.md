@@ -1,0 +1,61 @@
+Exploratory Data Analysis (EDA) Exercises
+================
+
+The following 7 questions are based on concepts covered in Chapters 7-8 in R4DS and can be answered using The Complete Journey data. Start by loading the `tidyverse` and the `completejourney` package.
+
+``` r
+library(tidyverse)
+library(completejourney)
+```
+
+------------------------------------------------------------------------
+
+**Question 1**: How many unique households exist in `transaction_data`? Also, how many of those households have demographic data in `hh_demographic`?
+
+Here are some suggested steps:
+
+1.  Create a list of unique `household_key`s from the transactions using `distinct()`
+2.  Count of households using `nrow()`
+3.  Use the `inner_join()` function to merge with the demographic data
+4.  Count the remaining rows in your result
+
+*This question grows your ability to count unique records in a dataset using `distinct()` and then use [`inner_join()`](http://r4ds.had.co.nz/relational-data.html#inner-join) to count records that existence in both datasets.*
+
+------------------------------------------------------------------------
+
+**Question 2**: Determine the weekly average spend per person. Hint: Calculate total weekly sales value per household and divide by the number of people. Below is the code to convert `household_size_desc` into an integer. Remember, we only have household demographics for a select portion of the data, so your first step should be to filter to only transactions that have a non-missing value in `household_size_desc`.
+
+`mutate(hh_person_count = as.integer(gsub('\\+' ,'', household_size_desc)))`
+
+*This question grows your ability to create a pipeline of data transformation steps to generate results. Specific functions include: [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`group_by()`, `summarize()`, and `ungroup()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise).*
+
+------------------------------------------------------------------------
+
+**Question 3**: Using the data derived in Question 2, plot the average spend per person segmented by count of children.
+*This question grows your ability to [`group_by()` and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and then plot the result using `geom_bar()`.*
+
+------------------------------------------------------------------------
+
+**Question 4**: Correlate spend on baby products with count of children. You gauge the relationship visually by creating a scatterplot of the two variables and adding a trend line. Hint: This question requires transforming `kid_category_desc` similar to Question 2 when we transformed `household_size_desc` into an integer.
+
+Here are some suggested steps:
+
+1.  Filter out baby product transactions and non-missing household information on children using this code: `filter(!is.na(kid_category_desc), grepl('BABY', sub_commodity_desc))`
+2.  Create a variable of the number of children in a household using this code:
+    `mutate(hh_kid_count = as.integer(gsub('\\+' ,'', kid_category_desc)))`
+3.  Summarize the total spend per child across households
+4.  Create a scatterplot with line using `geom_point()` and `geom_smooth()`.
+
+*This question grows your ability to [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`group_by()`, and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and then plot the result using `geom_point()` and `geom_smooth()`.*
+
+------------------------------------------------------------------------
+
+**Question 5**: In data analysis folklore it is said that Walmart increased beer sales by positioning diapers closer to the beer. What percentage of shopping baskets contained both diapers and beer?
+
+------------------------------------------------------------------------
+
+**Question 6**: Create a stacked bar chart showing across household income levels the percentage of sales from national brand products versus private label products. Describe the trend about the proportion of private label sales made across income levels.
+
+------------------------------------------------------------------------
+
+**Question 7**: How often do retailers match the manufacturer's coupons? Hint: Filter the data where `coupon_disc > 0` and find the percentage of these observations that `coupon_match_disc < 0` is also true.
