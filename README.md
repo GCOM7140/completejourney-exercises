@@ -5,9 +5,9 @@ by [84.51](http://www.8451.com). The study tracks retail shopping transactions f
 
 ### Step 1: Installing the Required Packages
 All of the exercises can be solved using the `tidyverse` and `completejourney` packages. 
-The `completejourney` package is an R data package has been created so that you 
-can load the full suite of Complete Journey datasets as a library. In order to 
-use the data you must first install the package following these steps: 
+The `completejourney` package is an R data package that has been created so the 
+full suite of Complete Journey datasets can be loaded as a library. In order to 
+use the data you must first install the package following these steps:
 
 1. Navigate to: https://github.com/settings/tokens and create a Personal Access Token. 
 The `completejourney` data package is a private repository, which requires you to access 
