@@ -3,7 +3,13 @@ A collection of exercises and solutions based on the Complete Journey study prov
 by [84.51](http://www.8451.com). The study tracks retail shopping transactions for 
 2,500 households over two years.
 
-### Step 1: Installing the Required Packages
+## Table of Contents
+ - [Installing the Required Packages](#installing-the-required-packages)
+ - [Working on the Exercises](#working-on-the-exercises)
+ - [Reviewing the Solutions](#reviewing-the-solutions)
+ - [Additional Resources](#additional-resources)
+
+### Installing the Required Packages
 All of the exercises can be solved using the `tidyverse` and `completejourney` packages. 
 The `completejourney` package is an R data package that has been created so the 
 full suite of Complete Journey datasets can be loaded as a library. In order to 
@@ -25,7 +31,7 @@ package, which can be installed by running the following command from the R cons
 `install.packages('devtools')`. More information on the `completejourney` package 
 can be found at: https://github.com/GCOM7140/completejourney
 
-### Step 2: Working on the Exercises
+### Working on the Exercises
 Below are links to the exercises. You can also find them by navigating to the [exercises](https://github.com/GCOM7140/completejourney-exercises/tree/master/exercises) 
 folder of this repository and click on the files ending in `.md` to view. 
 
@@ -36,7 +42,7 @@ Exercises:
  3. [Exploratory Data Analysis](https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/03-exploratory-data-analysis-exercises.md)
  4. [Data Wrangling](https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/04-data-wrangling-exercises.md)
 
-### Step 3: Reviewing the Solutions
+### Reviewing the Solutions
 After working through the exercises look at the solutions provided in the [solutions](https://github.com/GCOM7140/completejourney-exercises/tree/master/solutions) folder. 
 Compare your work with what is provided. There are usually multiple ways to perform 
 the same operation in R, so do not be concerned if your code does not match exactly. 
