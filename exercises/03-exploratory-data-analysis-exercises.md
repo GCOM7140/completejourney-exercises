@@ -8,15 +8,26 @@ library(tidyverse)
 library(completejourney)
 ```
 
+Run the following block of code to join datasets together and use when answering questions.
+
+``` r
+my_transaction_data <- left_join(transaction_data, 
+                                 product, by='product_id')
+my_transaction_data <- left_join(my_transaction_data, 
+                                 hh_demographic, by='household_key')
+my_campaign_table <- left_join(campaign_table,
+                               campaign_desc, by=c('campaign','description'))
+```
+
 ------------------------------------------------------------------------
 
-**Question 1**: How many unique households exist in `transaction_data`? Also, how many of those households have demographic data in `hh_demographic`?
+**Question 1**: How many unique households exist in `my_transaction_data`? Also, how many of those households have demographic data in `hh_demographic`?
 
 Here are some suggested steps:
 
-1.  Create a list of unique `household_key`s from the transactions using `distinct()`
+1.  Create a list of unique `household_key`s from `my_transaction_data` using `distinct()`
 2.  Count of households using `nrow()`
-3.  Use the `inner_join()` function to merge with the demographic data
+3.  Use the `inner_join()` function to merge with `hh_demographic`
 4.  Count the remaining rows in your result
 
 *This question grows your ability to count unique records in a dataset using `distinct()` and then use [`inner_join()`](http://r4ds.had.co.nz/relational-data.html#inner-join) to count records that existence in both datasets.*
@@ -36,7 +47,7 @@ Here are some suggested steps:
 
 ------------------------------------------------------------------------
 
-**Question 4**: Correlate spend on baby products with count of children. You gauge the relationship visually by creating a scatterplot of the two variables and adding a trend line. Hint: This question requires transforming `kid_category_desc` similar to Question 2 when we transformed `household_size_desc` into an integer.
+**Question 4**: Correlate spend on baby products with count of children. You can gauge the relationship visually by creating a scatterplot of the two variables and adding a trend line. Hint: This question requires transforming `kid_category_desc` similar to Question 2 when we transformed `household_size_desc` into an integer.
 
 Here are some suggested steps:
 

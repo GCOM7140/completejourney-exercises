@@ -10,13 +10,11 @@ library(completejourney)
 
 ------------------------------------------------------------------------
 
-**Question 1**: What percentage of households redeemed at least 1 coupon from a mailed campaign? Hint: There are a few different ways to answer this question using joins.
+**Question 1**: What percentage of households redeemed at least 1 coupon from a mailed campaign? Hint: There are a few different ways to answer this question using joins. One possible solution is to:
 
-One possible solution is to:
-
-1.  Summarize the number of coupon redemptions for each household from `coupon_redempt`
+1.  Summarize the number of coupon redemptions for each household using `coupon_redempt`
 2.  Use `distinct()` on the `campaign_table` to produce a list of households sent a campaign
-3.  Use `left_join()` to `transaction_data` with your result
+3.  Use `left_join()` to match households sent a campaign (derived in Step 2) with ones that redeemed a coupon (derived in Step 1)
 4.  Determine the percentage of observations with non-missing counts meaning the join found a match in the summary of households with redeemed coupons
 
 *This question grows your ability to produce counts and statistics by using [`left_join()`](http://r4ds.had.co.nz/relational-data.html#outer-join) and examining resulting the `NA` records.*

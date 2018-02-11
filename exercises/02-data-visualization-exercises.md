@@ -29,7 +29,7 @@ library(completejourney)
 
 Hint: Follow these steps to create your plot:
 
--   Filter to only transactions with `commodity_desc` equal to "SOFT DRINKS" or "CHEESE"
+-   Use `my_transaction_data` to filter to only transactions with `commodity_desc` equal to "SOFT DRINKS" or "CHEESE"
 -   Calculate the total sales value by `commodity_desc` and `brand`
 -   Create the bars using `geom_bar` with `stat='identity'` and `position='fill'`
 

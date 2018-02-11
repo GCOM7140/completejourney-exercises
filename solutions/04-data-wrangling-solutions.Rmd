@@ -1,5 +1,5 @@
 ---
-title: "Data Wrangling Exercises"
+title: "Data Wrangling Solutions"
 output: github_document
 ---
 
@@ -12,6 +12,7 @@ and can be answered using The Complete Journey data. Start by loading the `tidyv
 and the `completejourney` package.
 
 ```{r load-packages, warning=FALSE, message=FALSE}
+# required packages
 library(tidyverse)
 library(completejourney)
 ```
@@ -32,6 +33,18 @@ possible solution is to:
  
 *This question grows your ability to produce counts and statistics by using [`left_join()`](http://r4ds.had.co.nz/relational-data.html#outer-join) and examining resulting the `NA` records.*
 
+**Answer**:
+Of the 1,584 households that were mailed coupons as part of a campaign, only 
+27.4% of redeemed a coupon.
+
+```{r, Q1}
+hh_coupon_counts <- coupon_redempt %>% count(household_key)
+hh_campaign_participants <- campaign_table %>% distinct(household_key)
+hh_redemption_check <- left_join(hh_campaign_participants, 
+                                 hh_coupon_counts, by='household_key')
+mean(!is.na(hh_redemption_check$n))
+```
+
 ---
 
 **Question 2**:
@@ -41,6 +54,15 @@ redeemed a coupon. Then use `anti_join()` to return a list of household campaign
 participants who are not in the redeemed dataset. Finally, count the rows of that dataset.  
 *This question tests how to count the non-existence of records between two tables using [`anti_join()`](http://r4ds.had.co.nz/relational-data.html#filtering-joins)*
 
+**Answer**:
+```{r, Q2}
+hh_coupon_counts <- coupon_redempt %>% count(household_key)
+hh_campaign_participants <- campaign_table %>% distinct(household_key)
+
+anti_join(hh_campaign_participants, 
+          hh_coupon_counts, by='household_key') %>% nrow()
+```
+
 ---
 
 **Question 3**:
@@ -49,6 +71,21 @@ join the `coupon` and `product` to get the product description for
 the coupons, and then join with the `coupon_redempt`. The product is 
 described in `sub_commodity_desc`.  
 *This question grows your ability to join data with [`inner_join()`](http://r4ds.had.co.nz/relational-data.html#inner-join) to guarantee existence in two datasets and then count on the merged dataset.*
+
+**Answer**:
+The most popular product bought with a campaign coupon is "YOGURT NOT MULTI-PACKS".
+
+```{r Q3}
+coupon_data <- inner_join(coupon, 
+                          product, by=c('product_id'))
+product_redemption_data <- inner_join(coupon_redempt,
+                                      coupon_data, by=c('campaign', 'coupon_upc'))
+
+product_redemption_data %>%
+  count(sub_commodity_desc) %>%
+  arrange(desc(n)) %>%
+  filter(row_number() <= 3)
+```
 
 ---
 
@@ -60,14 +97,35 @@ in total sales the first week**.
 
 Here are some suggested steps: 
 
- 1. `group_by()` and `summarize()` the `sales_value` by `commodity_desc` and `week_no`
- 2. Take the first and last weeks using `filter(row_number() == 1 | row_number() == n())`
- 3. Re-group by category and create an indicator of the first and last 
+ 1. Join `transaction_data` with `product` to obtain the `commodity_desc` per transaction
+ 2. `group_by()` and `summarize()` the `sales_value` by `commodity_desc` and `week_no`
+ 3. Take the first and last weeks using `filter(row_number() == 1 | row_number() == n())`
+ 4. Re-group by category and create an indicator of the first and last 
  week using `ifelse(row_number() == 1, 'first', 'last')`
- 4. Unselect the `week_no` column and `spread()` the data to put the first and last columns 
+ 5. Unselect the `week_no` column and `spread()` the data to put the first and last columns 
  side-by-side for comparison
- 5. Calculate growth as `(last-first)/first`
- 6. `filter()` to only categories with >= 100 in `first` 
- 7. Finally, `arrange()` growth in descending order to determine the largest change
+ 6. Calculate growth as `(last-first)/first`
+ 7. `filter()` to only categories with >= 100 in `first` 
+ 8. Finally, `arrange()` growth in descending order to determine the largest change
  
 *This question grows your ability to create a pipeline of data transformation steps to generate results. Specific functions include: [`group_by()` and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`select()`](http://r4ds.had.co.nz/transform.html#select-columns-with-select), [`spread()`](http://r4ds.had.co.nz/tidy-data.html#spreading), and [`arrange()`](http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange).*
+
+**Answer**:
+"FLUID MILK PRODUCTS" had a first to last week change of over 16x, making it the 
+category that grew the most.
+
+```{r Q4}
+transaction_data %>%
+  left_join(product, by='product_id') %>%
+  group_by(commodity_desc, week_no) %>%
+  summarize(total_sales_value = sum(sales_value, na.rm=TRUE)) %>%
+  arrange(commodity_desc, week_no) %>%
+  group_by(commodity_desc) %>%
+  filter(row_number() == 1 | row_number() == n()) %>%
+  select(-week_no) %>%
+  mutate(week_indicator = ifelse(row_number() == 1, 'first', 'last')) %>%
+  spread(key = week_indicator, value = total_sales_value) %>%
+  mutate(growth = (last-first) / first) %>%
+  filter(first >= 100) %>%
+  arrange(desc(growth))
+```
