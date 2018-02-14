@@ -63,4 +63,4 @@ there are two great resources available:
 the tidyverse, and other principles covered in [R4DS](http://r4ds.had.co.nz/index.html). Review 
 this material carefully for best practices to use when completing these exercises.
 
-2. The source of the Complete Journey study data is available at: http://www.8451.com/area51/
+2. The source of the Complete Journey study data is available at: http://www.8451.com/area51/.
