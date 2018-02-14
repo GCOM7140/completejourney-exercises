@@ -56,8 +56,7 @@ Solutions:
  4. [Data Wrangling](https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/04-data-wrangling-solutions.md)
 
 ### Additional Resources
-If you would like to review additional material while working through these exercises 
-there are two great resources available: 
+If you would like to review additional material while working through these exercises there are two great resources available: 
 
 1. The exercises and solutions are written in a way that emphasizes learning of "tidy" data, 
 the tidyverse, and other principles covered in [R4DS](http://r4ds.had.co.nz/index.html). Review 
