@@ -58,11 +58,10 @@ Solutions:
  5. [Brandefy Private Label Case](https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/05-brandefy-private-label-case-solutions.md)
 
 ### Additional Resources
-If you would like to review additional material while working through these exercises 
-there are two great resources available: 
+If you would like to review additional material while working through these exercises there are two great resources available: 
 
 1. The exercises and solutions are written in a way that emphasizes learning of "tidy" data, 
 the tidyverse, and other principles covered in [R4DS](http://r4ds.had.co.nz/index.html). Review 
 this material carefully for best practices to use when completing these exercises.
 
-2. The source of the Complete Journey study data is available at: http://www.8451.com/area51/
+2. The source of the Complete Journey study data is available at: http://www.8451.com/area51/.
