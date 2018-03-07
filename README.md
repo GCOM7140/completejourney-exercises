@@ -41,6 +41,7 @@ Exercises:
  2. [Data Visualization](https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/02-data-visualization-exercises.md)
  3. [Exploratory Data Analysis](https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/03-exploratory-data-analysis-exercises.md)
  4. [Data Wrangling](https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/04-data-wrangling-exercises.md)
+ 5. [Brandefy Private Label Case](https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/05-brandefy-private-label-case-exercises.md)
 
 ### Reviewing the Solutions
 After working through the exercises look at the solutions provided in the [solutions](https://github.com/GCOM7140/completejourney-exercises/tree/master/solutions) folder. 
@@ -54,6 +55,7 @@ Solutions:
  2. [Data Visualization](https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/02-data-visualization-solutions.md)
  3. [Exploratory Data Analysis](https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/03-exploratory-data-analysis-solutions.md)
  4. [Data Wrangling](https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/04-data-wrangling-solutions.md)
+ 5. [Brandefy Private Label Case](https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/05-brandefy-private-label-case-solutions.md)
 
 ### Additional Resources
 If you would like to review additional material while working through these exercises 
