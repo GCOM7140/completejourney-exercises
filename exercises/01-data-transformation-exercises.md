@@ -23,8 +23,8 @@ to strengthen your ability to use the `dplyr` verbs [`arrange()`][arrange] and
 
 ------------------------------------------------------------------------
 
-**Question 2**: Create new variables for `regular price` and `loyalty price` 
-according to the following logic:
+**Question 2**: Create two new variables named `regular_price` and 
+`loyalty_price` according to the following logic:
 
 -   `regular_price = (sales_value - (retail_disc + coupon_match_disc)) / quantity`
 -   `loyalty_price = regular_price + (retail_disc / quantity)`
