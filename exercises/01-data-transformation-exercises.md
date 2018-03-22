@@ -23,12 +23,16 @@ to strengthen your ability to use the `dplyr` verbs [`arrange()`][arrange] and
 
 ------------------------------------------------------------------------
 
-**Question 2**: In `transaction_data` add regular prices before loyalty and coupon discounts and the loyalty prices according to this logic:
+**Question 2**: Create new variables for `regular price` and `loyalty price` 
+according to the following logic:
 
 -   `regular_price = (sales_value - (retail_disc + coupon_match_disc)) / quantity`
 -   `loyalty_price = regular_price + (retail_disc / quantity)`
 
-*This question grows your ability to use [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate).*
+This question is meant to strengthen your ability to use the `dplyr` verb 
+[`mutate()`][mutate].
+
+[mutate]: http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate
 
 ------------------------------------------------------------------------
 
