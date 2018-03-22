@@ -15,14 +15,11 @@ library(completejourney)
 **Question 1**: Using `transaction_data`, create a two-column tibble sorted by 
 basket, showing the most expensive item first. 
 
-**Hint:** Sort by `basket_id` and then by `sales_value`. Return only those two
+**Hint:** Sort by `basket_id`, then by `sales_value`. Return only those two
 variables. 
 
 This question is designed to strengthen your ability to use the `dplyr` 
 verbs [`arrange()`][arrange] and [`select()`][select].
-
-[arrange]: http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange
-[select]: http://r4ds.had.co.nz/transform.html#select-columns-with-select
 
 ------------------------------------------------------------------------
 
@@ -35,8 +32,6 @@ verbs [`arrange()`][arrange] and [`select()`][select].
 This question is designed to strengthen your ability to use the `dplyr` verb 
 [`mutate()`][mutate].
 
-[mutate]: http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate
-
 ------------------------------------------------------------------------
 
 **Question 3**: The `transaction_data` covers 92,339 unique product IDs. How 
@@ -47,9 +42,7 @@ less? What does this count equal for loyalty cardholders?
 using the `n_distinct()` function. 
 
 This question is designed to strengthen your ability to use the `dplyr` verb 
-[`filter()`][filter]
-
-[filter]: http://r4ds.had.co.nz/transform.html#filter-rows-with-filter
+[`filter()`][filter].
 
 ------------------------------------------------------------------------
 
@@ -63,9 +56,6 @@ to get the proportion over $10.
 This question is designed to strengthen your ability to use the `dplyr` verbs 
 [`summarize()`][summarize] and [`ungroup()`][ungroup].
 
-[summarize]: http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise
-[ungroup]: http://r4ds.had.co.nz/transform.html#ungrouping
-
 ------------------------------------------------------------------------
 
 **Question 5**: Which store with over $10K in total `sales_value` discounts its 
@@ -77,5 +67,13 @@ price using the following logic:
 -   `pct_loyalty_disc = 1 - (loyalty_price / regular_price)`
 
 This question is designed to strengthen your ability to use the `dplyr` verbs 
-`filter()`, `mutate()`, `group_by()`, `summarize()`, and `arrange()` (i.e., 
-almost everything covered in [Chapter 5](http://r4ds.had.co.nz/transform.html).)
+[`filter()`][filter], [`mutate()`][mutate], [`group_by()`][summarize], 
+[`summarize()`][summarize], and [`arrange()`][arrange] (i.e., 
+almost everything covered in [Chapter 5](http://r4ds.had.co.nz/transform.html)).
+
+[arrange]: http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange
+[select]: http://r4ds.had.co.nz/transform.html#select-columns-with-select
+[mutate]: http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate
+[filter]: http://r4ds.had.co.nz/transform.html#filter-rows-with-filter
+[summarize]: http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise
+[ungroup]: http://r4ds.had.co.nz/transform.html#ungrouping
