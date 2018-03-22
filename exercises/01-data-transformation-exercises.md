@@ -1,7 +1,9 @@
 Data Transformation Exercises
 ================
 
-The following 5 questions are based on concepts covered in Chapters 4-6 in R4DS and can be answered using The Complete Journey data. Start by loading the `tidyverse` and the `completejourney` package.
+The following five questions are based on concepts covered in Chapters 4-6 of 
+R4DS. Answer them using the Complete Journey data and start by loading the 
+`tidyverse` and `completejourney` packages.
 
 ``` r
 library(tidyverse)
@@ -10,8 +12,14 @@ library(completejourney)
 
 ------------------------------------------------------------------------
 
-**Question 1**: Using `transaction_data` create a 2-column dataset sorted by basket showing the most expensive item first. Hint: Sort by `basket_id` and then by `sales_value` and return only those two variables.
-*This question grows your ability to use [`arrange()`](http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange) and [`select()`](http://r4ds.had.co.nz/transform.html#select-columns-with-select).*
+**Question 1**: Using `transaction_data`, create a two-column tibble sorted by 
+basket, showing the most expensive item first. **Hint:** Sort by `basket_id` and 
+then by `sales_value`. Return only those two variables. This question is meant 
+to strengthen your ability to use the `dplyr` verbs [`arrange()`][arrange] and 
+[`select()`][select].
+
+[arrange]: http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange
+[select]: http://r4ds.had.co.nz/transform.html#select-columns-with-select
 
 ------------------------------------------------------------------------
 
