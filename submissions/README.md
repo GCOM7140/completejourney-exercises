@@ -3,10 +3,10 @@ Submit your answers to the [Complete Journey Exercise Sets][exercises] by adding
 files to this folder. Please use the following file-name convention for your 
 submissions: 
 
-- 01-data-transformation-lastname-firstname (.R or .Rmd/.md)
-- 02-data-visualization-lastname-firstname (.R or .Rmd/.md)
-- 03-exploratory-data-analysis-lastname-firstname (.R or .Rmd/.md)
-- 04-data-wrangling-lastname-firstname (.R or .Rmd/.md)
+- 01-cj-data-transformation-lastname-firstname (.R or .Rmd/.md)
+- 02-cj-data-visualization-lastname-firstname (.R or .Rmd/.md)
+- 03-cj-exploratory-data-analysis-lastname-firstname (.R or .Rmd/.md)
+- 04-cj-data-wrangling-lastname-firstname (.R or .Rmd/.md)
 
 The due dates/times for these exercises are as follows:
 
