@@ -75,7 +75,7 @@ price using the following logic:
 This question is designed to strengthen your ability to use the `dplyr` verbs 
 [`filter()`][filter], [`mutate()`][mutate], [`group_by()`][summarize], 
 [`summarize()`][summarize], and [`arrange()`][arrange] (i.e., 
-almost everything covered in [Chapter 5][chapter 5].
+almost everything covered in [Chapter 5][chapter5].
 
 [chapter 5]: http://r4ds.had.co.nz/transform.html
 [r4ds]: http://r4ds.had.co.nz/
