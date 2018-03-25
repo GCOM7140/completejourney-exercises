@@ -39,19 +39,19 @@ This question is designed to strengthen your ability to use the `dplyr` verb [`m
 
 ------------------------------------------------------------------------
 
-**Question 3**: The `transaction_data` covers 92,339 unique product IDs. How many unique products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty price?
+**Question 3**: `transaction_data` includes 92,339 unique product IDs. How many of these products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty and coupon prices?
 
 **Hint:** After filtering, select the product id column and count unique products using the `n_distinct()` function.
 
-This question is designed to strengthen your ability to use the `dplyr` verb [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter).
+This question is designed to strengthen your ability to use the `dplyr` verbs [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter) and [`select()`](http://r4ds.had.co.nz/transform.html#select-columns-with-select).
 
 ------------------------------------------------------------------------
 
 **Question 4**: What proportion of baskets are over $10 in sales value?
 
-**Hint:** You need to use [`summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), [`group_by()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), and [`ungroup()`](http://r4ds.had.co.nz/transform.html#ungrouping). Summarize over all baskets. In the last step, you can calculate the proportion by taking the mean of `TRUE/FALSE` values. Use the code `mean(basket_value > 10)` to get the proportion over $10.
+**Hint:** You need to use [`group_by()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), [`summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), and [`ungroup()`](http://r4ds.had.co.nz/transform.html#ungrouping). Summarize over all baskets. In the last step, you can calculate the proportion by taking the mean of `TRUE/FALSE` values. Use `mean(basket_value > 10)` to get the proportion over $10.
 
-This question is designed to strengthen your ability to use the `dplyr` verbs [`summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and [`ungroup()`](http://r4ds.had.co.nz/transform.html#ungrouping).
+This question is designed to strengthen your ability to use the `dplyr` verbs [`group_by()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), [`summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and [`ungroup()`](http://r4ds.had.co.nz/transform.html#ungrouping).
 
 ------------------------------------------------------------------------
 
