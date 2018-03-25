@@ -8,8 +8,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 The following five questions are based on concepts covered in 
-[Chapter 5][chapter 5] of [R4DS][r4ds]. Answer them using the Complete Journey 
-data and start by loading the `tidyverse` and `completejourney` packages.
+[Chapter 5][chapter 5] of [R4DS][r4ds]. Answer them using `transaction_data` in
+the Complete Journey data package and start by loading the `tidyverse` and 
+`completejourney` packages.
 
 ```{r load-packages, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -18,34 +19,39 @@ library(completejourney)
 
 ---
 
-**Question 1**: Using `transaction_data`, create a two-column tibble sorted by 
-basket, showing the most expensive item first. 
+**Question 1**: Change the discount variables (i.e., `retail_disc`, 
+`coupon_disc`, `coupon_match_disc`) from negative to positive. 
 
-**Hint:** Sort by `basket_id`, then by `sales_value`. Return only those two
-variables. 
+**Hint:** Use the `abs()` function within [`mutate()`][mutate]. 
 
 This question is designed to strengthen your ability to use the `dplyr` 
-verbs [`arrange()`][arrange] and [`select()`][select].
+verb [`mutate()`][mutate] to overwrite an existing variable.
 
 ---
 
-**Question 2**: Create two new variables named `regular_price` and 
-`loyalty_price` according to the following logic:
+**Question 2**: Create three new variables named `regular_price`, 
+`loyalty_price`, and `coupon_price` according to the following logic:
 
--   `regular_price = (sales_value - (retail_disc + coupon_match_disc)) / quantity`
--   `loyalty_price = regular_price + (retail_disc / quantity)`
+```{r eval = FALSE}
+regular_price = (sales_value + retail_disc + coupon_match_disc) / quantity
+loyalty_price = (sales_value + coupon_match_disc) / quantity
+coupon_price  = (sales_value - coupon_disc) / quantity
+```
+
 
 This question is designed to strengthen your ability to use the `dplyr` verb 
-[`mutate()`][mutate].
+[`mutate()`][mutate] to create new variables from existing ones. It should also
+help you develop a better understanding of the discount variables in 
+`transaction_data`.
 
 ---
 
 **Question 3**: The `transaction_data` covers 92,339 unique product IDs. How 
 many unique products (not transactions!) had a regular price of one dollar or 
-less? What does this count equal for loyalty cardholders? 
+less? What does this count equal for loyalty price? 
 
-**Hint:** After filtering select the product id column and count unique products 
-using the `n_distinct()` function. 
+**Hint:** After filtering, select the product id column and count unique 
+products using the `n_distinct()` function. 
 
 This question is designed to strengthen your ability to use the `dplyr` verb 
 [`filter()`][filter].
@@ -54,10 +60,10 @@ This question is designed to strengthen your ability to use the `dplyr` verb
 
 **Question 4**: What proportion of baskets are over $10 in sales value? 
 
-**Hint:** You need to use `summarize()`, `group_by(basket)`, and `ungroup()`. 
-Summarize over all baskets. In the last step you can calculate the proportion by 
-taking the mean of `TRUE/FALSE` values. Use the code `mean(basket_value > 10)` 
-to get the proportion over $10. 
+**Hint:** You need to use [`summarize()`][summarize], [`group_by()`][summarize], 
+and [`ungroup()`][ungroup]. Summarize over all baskets. In the last step, you 
+can calculate the proportion by taking the mean of `TRUE/FALSE` values. Use the 
+code `mean(basket_value > 10)` to get the proportion over $10. 
 
 This question is designed to strengthen your ability to use the `dplyr` verbs 
 [`summarize()`][summarize] and [`ungroup()`][ungroup].
@@ -67,10 +73,12 @@ This question is designed to strengthen your ability to use the `dplyr` verbs
 **Question 5**: Which store with over $10K in total `sales_value` discounts its 
 products the most for loyal customers? 
 
-**Hint:** You can calculate the loyalty discount as a percentage of regular 
-price using the following logic:
+**Hint:** You can calculate loyalty discount as a percentage of regular price 
+using the following logic:
 
--   `pct_loyalty_disc = 1 - (loyalty_price / regular_price)`
+```{r eval = FALSE}
+pct_loyalty_disc = 1 - (loyalty_price / regular_price)
+```
 
 This question is designed to strengthen your ability to use the `dplyr` verbs 
 [`filter()`][filter], [`mutate()`][mutate], [`group_by()`][summarize], 
