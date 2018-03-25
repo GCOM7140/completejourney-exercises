@@ -12,9 +12,18 @@ The following five questions are based on concepts covered in
 the Complete Journey data package and start by loading the `tidyverse` and 
 `completejourney` packages.
 
-```{r load-packages, warning=FALSE, message=FALSE}
+```{r load-packages, warning = FALSE, message = FALSE, eval = FALSE}
 library(tidyverse)
 library(completejourney)
+
+transaction_data <- transaction_data %>% 
+  select(
+    quantity,
+    sales_value, 
+    retail_disc, coupon_disc, coupon_match_disc,
+    household_key, store_id, basket_id, product_id, 
+    week_no, day, trans_time
+  )
 ```
 
 ---

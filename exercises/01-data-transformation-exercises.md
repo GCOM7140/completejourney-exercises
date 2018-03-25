@@ -6,6 +6,15 @@ The following five questions are based on concepts covered in [Chapter 5](http:/
 ``` r
 library(tidyverse)
 library(completejourney)
+
+transaction_data <- transaction_data %>% 
+  select(
+    quantity,
+    sales_value, 
+    retail_disc, coupon_disc, coupon_match_disc,
+    household_key, store_id, basket_id, product_id, 
+    week_no, day, trans_time
+  )
 ```
 
 ------------------------------------------------------------------------
