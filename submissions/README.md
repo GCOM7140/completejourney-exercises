@@ -1,6 +1,6 @@
 # Complete Journey Submissions
 Submit your answers to the [Complete Journey Exercise Sets][exercises] by adding 
-files to this folder. Please use the following file-name convention for your 
+your work to this folder. Please use the following file-name convention for your 
 submissions: 
 
 - 01-cj-data-transformation-lastname-firstname (.R or .Rmd/.md)
