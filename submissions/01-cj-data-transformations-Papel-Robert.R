@@ -2,7 +2,6 @@
 
 library(tidyverse)
 library(completejourney)
-library(dplyr)
 
 transaction_data <- transaction_data %>% 
   select(
@@ -17,29 +16,30 @@ transaction_data
 
 #### ----- Question 1 : Change the discount variables (i.e., retail_disc, coupon_disc, coupon_match_disc) from negative to positive.
 
-transaction_data <- transaction_data %>% 
-  select(
-    retail_disc, coupon_disc, coupon_match_disc
+transaction_data <- transaction_data %>%
+  mutate(
+    retail_disc = abs(retail_disc),
+    coupon_disc = abs(coupon_disc),
+    coupon_match_disc = abs(coupon_match_disc)
   )
-
-mutate(transaction_data, retail_disc, coupon_disc, coupon_match_disc)
-abs(transaction_data)
 
 #### ----- Question 2: Create three new variables named regular_price, loyalty_price, and coupon_price according to the following logic:
 
+transaction_data <- transaction_data %>%
+  mutate(regular_price = (sales_value + retail_disc + coupon_match_disc) / quantity) %>% 
+  mutate(loyalty_price = (sales_value + coupon_match_disc) / quantity) %>% 
+  mutate(coupon_price  = (sales_value - coupon_disc) / quantity)
+
+# Question 3: transaction_data includes 92,339 unique product IDs. How many of
+# these products (not transactions!) had a regular price of one dollar or less?
+# What does this count equal for loyalty and coupon prices?
+
 transaction_data %>%
-  mutate(regular_price = (sales_value + retail_disc + coupon_match_disc) / quantity)
-mutate(loyalty_price = (sales_value + coupon_match_disc) / quantity)
-mutate(coupon_price  = (sales_value - coupon_disc) / quantity)
+  filter(regular_price <= 1.00) %>%
+  select(product_id)  %>%
+  n_distinct()
 
-#### ----- Question 3: transaction_data includes 92,339 unique product IDs. How many of these products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty and coupon prices?
-
-transaction_data %>%
-  select(sales_value, product_id)  %>%
-  filter(sales_value < 1.00) %>%
-  summarise(count_all = n_distinct(product_id))
-
-# Answer: there are 367,853 produces that are $1 or less, and 16,950 different disticnt product id's
+# Answer: there are 12,442 products that are $1 or less
 
 transaction_data %>%
   select(loyalty_price, product_id)  %>%
@@ -70,6 +70,7 @@ transaction_data %>%
   select(sales_value, loyalty_price, coupon_disc, regular_price) %>%
   mutate(pct_loyalty_disc = 1 - (loyalty_price / regular_price)) %>%
   filter(sales_value, pct_loyalty_disc) %>%
+  
   
   
   
