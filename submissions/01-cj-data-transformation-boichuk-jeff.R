@@ -5,8 +5,6 @@ library(tidyverse)
 #                auth_token = '')
 library(completejourney)
 
-ss
-
 # use select() to organize the columns systematically / help you understand them
 # better
 
