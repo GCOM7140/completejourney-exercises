@@ -204,6 +204,9 @@ transaction_data <- transaction_data %>%
 ################
 ###Question 1###
 ################
+
+#Got help from solutions intensively here#
+
 #Change the discount variables (i.e., retail_disc, coupon_disc, coupon_match_disc) from negative to positive.
 #Hint: Use the abs() function within mutate().
 
@@ -237,19 +240,23 @@ select(regular_price, loyalty_price, coupon_price, everything())
 #transaction_data includes 92,339 unique product IDs. How many of these products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty and coupon prices?
 
 transaction_data %>% 
-  filter(regular_price <= 1) %>% 
-  select(product_id) %>% 
-  n_distinct()
+filter(regular_price <= 1) %>% 
+select(product_id) %>% 
+n_distinct()
+
+#This code doesn't work and I'm not sure why...
 
 transaction_data %>% 
-  filter(loyalty_price <= 1) %>% 
-  select(product_id) %>% 
-  n_distinct()
+filter(loyalty_price <= 1) %>% 
+select(product_id) %>% 
+n_distinct()
 
 transaction_data %>% 
-  filter(coupon_price <= 1) %>% 
-  select(product_id) %>% 
-  n_distinct()
+filter(coupon_price <= 1) %>% 
+select(product_id) %>% 
+n_distinct()
+
+##I can't quite figure this question out, above are solutions but they don't work at all?
 
 ################
 ###Question 4###
@@ -257,10 +264,13 @@ transaction_data %>%
 #What proportion of baskets are over $10 in sales value?
 
 transaction_data %>%
-  group_by(basket_id) %>%
-  summarize(basket_value = sum(sales_value)) %>%
-  ungroup() %>%
-  summarize(proportion_over_10 = mean(basket_value > 10))
+group_by(basket_id) %>%
+#We want to group the data by this var
+summarize(basket_value = sum(sales_value)) %>%
+ungroup() %>%
+summarize(basket_proportion = mean(basket_value > 10))
+
+#Simple solution here, gives .654%
 
 ################
 ###Question 5###
@@ -268,21 +278,20 @@ transaction_data %>%
 #Which store with over $10K in total sales_value discounts its products the most for loyal customers?
 
 transaction_data %>%
-  filter(
-    is.finite(regular_price), 
-    is.finite(loyalty_price), 
-    regular_price > 0
-  ) %>%
-  mutate(
-    pct_loyalty_disc     = 1 - (loyalty_price / regular_price)
-  ) %>%
-  group_by(store_id) %>%
-  summarize(
-    total_sales_value    = sum(sales_value), 
-    avg_pct_loyalty_disc = mean(pct_loyalty_disc)
-  ) %>%
-  filter(total_sales_value > 10000) %>%
-  arrange(desc(avg_pct_loyalty_disc))
+
+filter(is.finite(regular_price), is.finite(loyalty_price), regular_price > 0) %>%
+
+mutate(pct_loyalty_disc = 1 - (loyalty_price / regular_price)) %>%
+  
+group_by(store_id) %>%
+
+summarize(total_sales_value = sum(sales_value), avg_pct_loyalty_disc = mean(pct_loyalty_disc)) %>%
+
+filter(total_sales_value > 10000) %>%
+
+arrange(desc(avg_pct_loyalty_disc))
+
+##Above is the (reorganized for my understanding) boichuk solution, but I can't get it to run and my other attempts on this question have also failed. regular_price isn't being found as a variable, something is wrong with my mutate in q2 perhaps, that is screwing up the rest of the questions.
 
 ###
 ###End of Section B###
