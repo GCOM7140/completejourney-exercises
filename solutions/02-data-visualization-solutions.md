@@ -65,7 +65,7 @@ my_transaction_data %>%
   summarize(total_sales_value = sum(sales_value)) %>%
   ggplot() + 
   geom_bar(
-    mapping = aes(x = brand, y = total_sales_value, fill = brand), 
+    mapping = aes(x = brand, y = total_sales_value), 
     stat = 'identity'
   )
 ```
