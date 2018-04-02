@@ -117,7 +117,7 @@ ggplot(pb_and_j_data) +
   geom_bar(aes(x = product_size))
 ```
 
-This results can be confirmed numerically in the data: 
+This result can be confirmed numerically in the data: 
 
 ```{r Q5b}
 pb_and_j_data %>% 

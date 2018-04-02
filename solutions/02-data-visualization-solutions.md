@@ -123,7 +123,7 @@ ggplot(pb_and_j_data) +
 
 ![](02-data-visualization-solutions_files/figure-markdown_github/Q5a-1.png)
 
-This results can be confirmed numerically in the data:
+This result can be confirmed numerically in the data:
 
 ``` r
 pb_and_j_data %>% 
