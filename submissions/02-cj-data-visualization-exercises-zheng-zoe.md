@@ -1,4 +1,4 @@
-Answers to the complete jorney data visulization Exercise
+Answers to the complete journey data visulization Exercise
 ================
 Zoe Zheng
 April 3, 2018
