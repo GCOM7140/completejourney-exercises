@@ -1,5 +1,5 @@
 # install.packages('devtools')
-library(devtools)
+# library(devtools)
 library(tidyverse)
 # devtools::install_github('GCOM7140/completejourney', 
 #                auth_token = '')
@@ -90,7 +90,7 @@ kroger_basket <- tribble(
   ~quantity, ~sales_value, ~retail_disc, ~coupon_disc, ~coupon_match_disc, 
   ~household_key, ~store_id, ~basket_id, ~product, ~week_no, ~day, ~trans_time,
  #-|-----|-----|-----|-----|-----|----|------------|-----------|---|---|-------|
-  2, 5.48, 0.00, 0.50, 0.50, 2501, 563, 99999999999, "cereal"  , 11, 11, "2101",
+  2, 5.73, 0.00, 0.75, 0.25, 2501, 563, 99999999999, "cereal"  , 11, 11, "2101",
   3, 3.00, 0.75, 0.00, 0.00, 2501, 563, 99999999999, "sprt drk", 11, 11, "2101",
   1, 3.79, 0.00, 0.00, 0.00, 2501, 563, 99999999999, "red bull", 11, 11, "2101",
   2, 4.00, 0.98, 0.00, 0.00, 2501, 563, 99999999999, "chips"   , 11, 11, "2101",

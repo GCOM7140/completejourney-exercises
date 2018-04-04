@@ -3,68 +3,61 @@ title: "Data Visualization Solutions"
 output: github_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The following 5 questions are based on concepts covered in Chapters 1-3 in R4DS 
-and can be answered using The Complete Journey data. Start by loading the `tidyverse` 
-and the `completejourney` package.
+The following five questions are based on concepts covered in [Chapter 3 of R4DS][Grolemund and Wickham 2017, 3]. They can be answered using the `transaction_data` and `product` datasets from the `completejourney` package. Start by loading the `tidyverse` and `completejourney` packages.
 
-```{r load-packages, warning=FALSE, message=FALSE}
-# required packages
+```{r load-packages, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(completejourney)
 ```
 
 ---
 
-**Question 1**:
-Create a histogram of quantity. Is there anything unusual in the graph?  
-*This question grows your ability to use `geom_histogram()`.*
+**Question 1**: Create a histogram of `quantity`. What, if anything, do you find unusual about this visualization? 
+
+This question is designed to strengthen your ability to use `geom_histogram()`.
 
 **Answer**:
-The unusual part of the plot is an extremely long tail end to the histogram. The 
-distance is so far that the histogram appears to look like a single bar. This may 
-warrant further research and cleaning of the data.
 
-```{r Q1, message=FALSE}
-ggplot(transaction_data) + 
-  geom_histogram(mapping = aes(quantity))
+The unusual aspect of the histogram is its extremely long tail. The distance is so far that the histogram almost appears to be a single bar. This distortion warrants further research and cleaning of the data (e.g., `filter(quantity < 50)`).
+
+```{r Q1, message = FALSE}
+ggplot(data = transaction_data) + 
+  geom_histogram(mapping = aes(x = quantity))
 ```
 
 ---
 
-**Question 2**:
-Create a line chart that plots total sales value over time. Is there anything 
-unusual in the graph?  
-*This question grows your ability to use `geom_line()`.*
+**Question 2**: Use a line graph to plot total sales value by day. What, if anything, do you find unusual about this visualization?
+
+This question is designed to strengthen your ability to use `dplyr` verbs in combination with `geom_line()`.
 
 **Answer**:
-The unusual part of the plot is the increase in total spend over the first 100 days 
-and that some days had $0 in spend. It is possible that there are some issues with the data.
+
+The unusual aspects of the the line graph below relate to (a) the increase in total spend over the first 100 days and (b) the near-zero total sales values on `day == 278` and `day == 643`. The first oddity could signal that the `completejourney` study stems from a single cohort of customers that joined the retailer at some point in the first 100 days and then stayed with the retailer for the entire two-year period. The second oddity could be the result of store closures due to bad weather.
 
 ```{r Q2}
 transaction_data %>% 
   group_by(day) %>% 
-  summarize(total_sales_value = sum(sales_value, na.rm=TRUE)) %>%
+  summarize(total_sales_value = sum(sales_value, na.rm = TRUE)) %>%
   ggplot() + 
-  geom_line(mapping = aes(x=day, y=total_sales_value))
+  geom_line(mapping = aes(x = day, y = total_sales_value))
 ```
 
 ---
 
-**Question 3**:
-Create a bar chart comparing total sales value of private label versus national 
-brands. Assign different colors to the bars using the `fill` argument inside `aes()`.
-The `transaction_data` does not contain detailed product information, so first run 
-the code below to create a new set of transactions with product data included and 
-use `my_transaction_data` to answer the question.
+**Question 3**: Use a bar graph to compare the total sales values of national and private-label brands. 
 
-```{r Q3}
-my_transaction_data <- left_join(transaction_data, product, by='product_id')
+**Hint**: Because `transaction_data` does not contain product metadata, run the code below to create a new dataset with additional product information in it. Use `my_transaction_data` for your answer.
+
+```{r}
+my_transaction_data <- left_join(transaction_data, product, by = 'product_id')
 ```
-*This question grows your ability to use `geom_bar()` along with its `stat` argument.*
+
+This question is designed to strengthen your ability to use `dplyr` verbs in combination with `geom_bar()` along with its `stat` argument.
 
 **Answer**:
 ```{r Q3a}
@@ -72,23 +65,21 @@ my_transaction_data %>%
   group_by(brand) %>%
   summarize(total_sales_value = sum(sales_value)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x=brand, y=total_sales_value, fill=brand), stat='identity')
+  geom_bar(
+    mapping = aes(x = brand, y = total_sales_value), 
+    stat = 'identity'
+  )
 ```
 
 ---
 
-**Question 4**:
-Building upon Question 3, we suspect customers prefer national brands for soft 
-drinks, but less so for diary products like cheese. Confirm this by creating a 
-stacked bar chart showing the percentage split of cheese sales between national 
-and private brands and a similar split for soft drinks. 
+**Question 4**: Building on Question 3, suppose you want to understand whether the retailer's customers' preference for national brands (compared to private-label brands) is stronger in the soft drink category than it is in the cheese category. Examine this supposition by using a stacked bar graph to compare the split between national and private-label brands for soft drinks and cheeses. 
 
-Hint: Follow these steps to create your plot: 
+**Hint**: Follow these three steps to create your plot: 
 
- - Use `my_transaction_data` to filter to only transactions with `commodity_desc` 
- equal to "SOFT DRINKS" or "CHEESE" 
- - Calculate the total sales value by `commodity_desc` and `brand`
- - Create the bars using `geom_bar` with `stat='identity'` and `position='fill'`
+ - Filter `my_transaction_data` to include only transactions with `commodity_desc` equal to "SOFT DRINKS" or "CHEESE" 
+ - Calculate total sales value by `commodity_desc` and `brand`
+ - Create the bars using `geom_bar` with `stat = 'identity'` and `position = 'fill'`
 
 **Answer**: 
 ```{r Q4}
@@ -97,38 +88,41 @@ my_transaction_data %>%
   group_by(commodity_desc, brand) %>%
   summarize(total_sales_value = sum(sales_value)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x=commodity_desc, y=total_sales_value, fill=brand), 
-           stat='identity', position='fill')
+  geom_bar(
+    mapping  = aes(x = commodity_desc, y = total_sales_value, fill = brand), 
+    stat     = 'identity', 
+    position = 'fill'
+  )
 ```
 
 ---
 
-**Question 5**:
-Below is a block of code that creates a dataset of transactions of peanut better, 
-jelly and jams with the product size determined in ounces. Run the code below to 
-create the `pb_and_j_data` dataset and from it create a bar chart that shows the 
-most popular size (in ounces) of peanut butter and jelly products. 
+**Question 5**: The code below filters `my_transaction_data` to include only peanut better, jelly, and jam transactions. Then it creates a new variable named `product_size` equal to product size in ounces. Create a bar graph with `pb_and_j_data` to visualize the distribution of the retailer's PB\&J transactions by product size. Which two product sizes are the most popular?
 
-```{r Q5, warning=FALSE}
+```{r Q5, warning = FALSE}
 pb_and_j_data <- my_transaction_data %>% 
   filter(commodity_desc == 'PNT BTR/JELLY/JAMS') %>%
-  select(curr_size_of_product) %>%
-  mutate(product_size = as.factor(as.integer(gsub('([0-9]+)([[:space:]]*OZ)',
-                                                  '\\1', curr_size_of_product))))
+  mutate(
+    product_size = as.factor(as.integer(gsub('([0-9]+)([[:space:]]*OZ)', '\\1',
+                                             curr_size_of_product)))
+  )
 ```
 
 **Answer**:
-The most popular PB&J product size is the 18oz jar. The runner-up is the 32oz jar.
+
+The most popular product size for PB&J products is 18oz. The runner-up is 32oz.
 
 ```{r Q5a}
 ggplot(pb_and_j_data) + 
-  geom_bar(aes(x=product_size))
+  geom_bar(aes(x = product_size))
 ```
 
-This can be confirmed numerically from the data: 
+This result can be confirmed numerically in the data: 
 
 ```{r Q5b}
 pb_and_j_data %>% 
   count(product_size) %>% 
   arrange(-n)
 ```
+
+[Grolemund and Wickham 2017, 3]: http://r4ds.had.co.nz/data-visualisation.html
