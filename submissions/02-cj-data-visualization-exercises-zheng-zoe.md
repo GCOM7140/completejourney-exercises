@@ -2,7 +2,7 @@ Answers to the complete journey data visulization Exercise
 ================
 Zoe Zheng
 April 3, 2018
-
+ 
 ``` r
 library(tidyverse)
 ```
