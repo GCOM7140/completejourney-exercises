@@ -1,57 +1,35 @@
 # Lucas Pulliza
-# Homework Set 2, CJ
+# Homework Set 2, R4DS
 
 library(tidyverse)
-library(completejourney)
 library(ggplot2)
 
-# (1) Histogram of Quantity 
-ggplot(data = transaction_data) + 
-  geom_histogram(mapping = aes(x = quantity))
-# Looks like a bar graph because of the tail
 
-# (2) Line graph to plot total sales value by day
-transaction_data %>% 
-  group_by(day) %>% 
-  summarize(total_sales_value = sum(sales_value, na.rm = TRUE)) %>%
-  ggplot() + 
-  geom_line(mapping = aes(x = day, y = total_sales_value))
-# Rapid increase over first 100, perahps because the store just opened? And two zeros between 200/400 and after 600 likely due to store closures
+#1 Run Graph
+ggplot(data = mpg)
+# It shows a blank graph...
 
-# (3) Bar graph comparing national and private-label
-my_transaction_data <- left_join(transaction_data, product, by = 'product_id')
-my_transaction_data %>%
-  group_by(brand) %>%
-  summarize(total_sales_value = sum(sales_value)) %>%
-  ggplot() + 
-  geom_bar(
-    mapping = aes(x = brand, y = total_sales_value), 
-    stat = 'identity'
-  )
+#2 Scatterplot of cyl vs displ
+ggplot(data = mpg, aes(x = cyl, y = displ)) + 
+  geom_point()
+#boxplot shows additional information such as medians/interquartile ranges, essentially more specific
 
-# (4) Soft drink and cheest national brands
-my_transaction_data %>%
-  filter(commodity_desc %in% c('SOFT DRINKS', 'CHEESE')) %>%
-  group_by(commodity_desc, brand) %>%
-  summarize(total_sales_value = sum(sales_value)) %>%
-  ggplot() + 
-  geom_bar(
-    mapping  = aes(x = commodity_desc, y = total_sales_value, fill = brand), 
-    stat     = 'identity', 
-    position = 'fill'
-  )
+#3 What happens if you make a scatterplot of class vs drv? Why is the plot not useful? Create an alternative visualization that displays the data more effectively
+ggplot(mpg, aes(x = class, y = drv)) +
+  geom_point()
 
-# (5)
-pb_and_j_data <- my_transaction_data %>% 
-  filter(commodity_desc == 'PNT BTR/JELLY/JAMS') %>%
-  mutate(
-    product_size = as.factor(as.integer(gsub('([0-9]+)([[:space:]]*OZ)', '\\1',
-                                             curr_size_of_product)))
-  )
+#4 this is self-explanatory..
+geom_line() 
+geom_boxplot()
+geom_histogram()
+geom_area()
 
-ggplot(pb_and_j_data) + 
-  geom_bar(aes(x = product_size))
+#5 Will these graphs look different?
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
 
-pb_and_j_data %>% 
-  count(product_size) %>% 
-  arrange(-n)
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+# No, they are identifical. The top gets this done with less code/more efficiently.
