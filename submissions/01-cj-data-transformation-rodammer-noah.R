@@ -57,7 +57,7 @@ transaction_data<-mutate(transaction_data,
                          loyalty_price = (sales_value + coupon_match_disc) / quantity, 
                          coupon_price  = (sales_value - coupon_disc) / quantity)
 
-transaction_data
+select(transaction_data,regular_price,loyalty_price,coupon_price,everything())
 
 #################
 #  QUESTION #3  #
@@ -65,11 +65,25 @@ transaction_data
 
 #transaction_data includes 92,339 unique product IDs. How many of these products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty and coupon prices?
 
-n_distinct(select(filter(transaction_data,
-                         regular_price<=1),
-                  product_id))
+transaction_data %>%
+  filter(regular_price<=1) %>%
+ select(product_id) %>%
+  n_distinct()
+
 ##12,442
-##What does this count equal for loyalty and coupon prices??
+
+
+transaction_data %>%
+  filter(loyalty_price<=1) %>%
+  select(product_id) %>%
+  n_distinct()
+##20,113
+
+transaction_data %>%
+  filter(coupon_price<=1) %>%
+  select(product_id) %>%
+  n_distinct()
+##22,273
 
 #################
 #  QUESTION #4  #
