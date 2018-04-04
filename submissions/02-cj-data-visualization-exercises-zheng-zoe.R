@@ -4,7 +4,7 @@
 #' date: April 3, 2018
 #' output: github_document
 #' ---
- 
+  
 library(tidyverse)
 library(completejourney)
 library(ggplot2)
