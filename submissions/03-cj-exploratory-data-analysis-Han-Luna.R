@@ -87,4 +87,19 @@ exercise_4 <- inner_join(my_transaction_data, product) %>%
     )
     
 #Exercise 5 Using a stacked bar chart that's partitioned by income level (i.e., income_desc), visualize the total amount of money customers spent on national-brand products versus private-label products.
+  inner_join(my_transaction_data, hh_demographic) %>% 
+    mutate(
+      income_group = factor(income_desc, 
+                           levels = c('Under 10K',   '11-20K',   '21-30K', 
+                                      '31-40K',   '41-70K',   '71-90K', 
+                                      '91-120K', '121-140K', '141-170K', 
+                                      '171-200K', '201-249K',    '250K+'),
+                           ordered = TRUE)
+    ) %>%
+    group_by(income_group, brand) %>%
+    mutate  (total_spend = sum(purchase_price)) %>% 
+    ggplot() +
+    geom_col(aes(x = income_group, y = total_spend, fill = brand), 
+             position = 'fill') 
+
   
