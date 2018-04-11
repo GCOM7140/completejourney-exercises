@@ -1,5 +1,6 @@
 # Paige Atkins 
-# 03-cj-exploratory-data-atkins-paige
+# 03-cj-exploratory-data-analysis-atkins-paige
+#changes for Boichuk
 
 library(tidyverse)
 library(completejourney)
