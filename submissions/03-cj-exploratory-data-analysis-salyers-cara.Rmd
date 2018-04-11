@@ -1,0 +1,209 @@
+---
+title: "Exploratory Data Analysis (EDA) Exercises"
+author: Cara Salyers
+date: April 9, 2018
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+```
+
+The following 7 questions are based on concepts covered in Chapters 7-8 in R4DS 
+and can be answered using The Complete Journey data. Start by loading the `tidyverse` 
+and the `completejourney` package.
+
+```{r load-packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(completejourney)
+```
+
+Run the following block of code to join datasets together and use when answering 
+questions.
+
+```{r data-prep}
+my_transaction_data <- left_join(transaction_data, 
+                                 product, by='product_id')
+my_transaction_data <- left_join(my_transaction_data, 
+                                 hh_demographic, by='household_key')
+my_campaign_table <- left_join(campaign_table,
+                               campaign_desc, by=c('campaign','description'))
+```
+
+---
+
+**Question 1**: 
+How many unique households exist in `my_transaction_data`? Also, how many of those 
+households have demographic data in `hh_demographic`?
+
+Here are some suggested steps: 
+
+ 1. Create a list of unique `household_key`s from `my_transaction_data` using `distinct()`
+ 2. Count of households using `nrow()`
+ 3. Use the `inner_join()` function to merge with `hh_demographic` 
+ 4. Count the remaining rows in your result
+ 
+*This question grows your ability to count unique records in a dataset using `distinct()` and then use [`inner_join()`](http://r4ds.had.co.nz/relational-data.html#inner-join) to count records that existence in both datasets.*
+
+**ANSWER:**
+2500 unique households, 801 of them have demographic data
+```{r Q1}
+unique_household <- my_transaction_data %>% 
+  distinct(household_key)
+nrow(unique_household) 
+
+inner_join(unique_household, hh_demographic, by = "household_key") %>% 
+  nrow()
+```
+
+---
+
+**Question 2**: 
+Determine the weekly average spend per person. Hint: Calculate total weekly sales 
+value per household and divide by the number of people. Below is the code to convert 
+`household_size_desc` into an integer. Remember, we only have household demographics 
+for a select portion of the data, so your first step should be to filter to only 
+transactions that have a non-missing value in `household_size_desc`. 
+
+`mutate(hh_person_count = as.integer(gsub('\\+' ,'', household_size_desc)))`
+
+*This question grows your ability to create a pipeline of data transformation steps to generate results. Specific functions include: [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`group_by()`, `summarize()`, and `ungroup()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise).*
+
+**ANSWER:**
+Average weekly spending is about $45.32 per person
+```{r Q2}
+my_transaction_data %>% 
+  filter(!is.na(household_size_desc)) %>% 
+  mutate(hh_person_count = as.integer(gsub('\\+' ,'', household_size_desc))) %>% 
+  group_by(household_key, week_no) %>% 
+  summarize(person_count = max(hh_person_count, na.rm=TRUE), 
+            total_sales_value = sum(sales_value, na.rm=TRUE)) %>%
+  ungroup() %>% 
+  mutate(weekly_spend_per_person = total_sales_value / person_count)
+
+weekly_spend_per_person %>%
+  summarize(avg_wkly_spend_per_person = mean(weekly_spend_per_person, na.rm=TRUE))
+
+```
+
+---
+
+**Question 3**:
+Using the data derived in Question 2, plot the average spend per person segmented 
+by count of children.  
+*This question grows your ability to [`group_by()` and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and then plot the result using `geom_bar()`.*
+
+**ANSWER:**
+```{r Q3}
+weekly_spend_per_person %>% 
+  group_by(person_count) %>%
+  summarize(avg_wkly_spend_per_person = mean(weekly_spend_per_person, na.rm=TRUE)) %>% 
+  ggplot() +
+  geom_bar(aes(x = person_count, y = avg_wkly_spend_per_person),
+           stat = "identity")
+```
+
+---
+
+**Question 4**: 
+Correlate spend on baby products with count of children. You can gauge the relationship 
+visually by creating a scatterplot of the two variables and adding a trend line. 
+Hint: This question requires transforming `kid_category_desc` similar to 
+Question 2 when we transformed `household_size_desc` into an integer. 
+
+Here are some suggested steps: 
+
+  1. Filter out baby product transactions and non-missing household information on 
+  children using this code: `filter(!is.na(kid_category_desc), grepl('BABY', sub_commodity_desc))`
+  2. Create a variable of the number of children in a household using this code:  
+  `mutate(hh_kid_count = as.integer(gsub('\\+' ,'', kid_category_desc)))`
+  3. Summarize the total spend per child across households
+  4. Create a scatterplot with line using `geom_point()` and `geom_smooth()`.
+  
+*This question grows your ability to [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`group_by()`, and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and then plot the result using `geom_point()` and `geom_smooth()`.*
+
+**ANSWER:**
+There does not appear to be a strong correlation between total spending on baby 
+products and number of children
+```{r Q4}
+ my_transaction_data %>%
+  filter(!is.na(kid_category_desc), grepl('BABY', sub_commodity_desc)) %>%
+  mutate(hh_kid_count = as.integer(gsub('\\+' ,'', kid_category_desc))) %>%
+  group_by(household_key) %>%
+  summarize(avg_kid_count = mean(hh_kid_count, na.rm=TRUE), 
+            total_sales_value = sum(sales_value, na.rm=TRUE)) %>% 
+  ggplot(data=., mapping=aes(x=avg_kid_count, y=total_sales_value)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+---
+
+**Question 5**: 
+In data analysis folklore it is said that Walmart increased beer sales by positioning 
+diapers closer to the beer. What percentage of shopping baskets contained both 
+diapers and beer?
+
+**ANSWER:**
+0.001002984 or about 1% of all baskets contianed both beer and diapers, and the lift
+is 1.070171, meaning that buying diapers makes you about 7% more likely to buy beer
+```{r Q5}
+my_transaction_data %>% 
+  filter(!is.na(sub_commodity_desc)) %>%
+  mutate(diapers_indicator = (sub_commodity_desc == 'BABY DIAPERS'), 
+         beer_indicator = (sub_commodity_desc == 'BEERALEMALT LIQUORS')) %>%
+  group_by(basket_id) %>%
+  summarize(basket_diapers_indicator = any(diapers_indicator), 
+            basket_beer_indicator = any(beer_indicator)) %>%
+  mutate(diapers_and_beer = basket_diapers_indicator * basket_beer_indicator) %>%
+  ungroup() %>%
+  summarize(diapers_and_beer_pct_of_total = mean(diapers_and_beer))
+```
+
+```{r Q5a}
+0.001002984 / (0.01654018 * 0.05666314)
+```
+
+---
+
+**Question 6**:
+Create a stacked bar chart showing across household income levels the percentage 
+of sales from national brand products versus private label products. Describe the 
+trend about the proportion of private label sales made across income levels.
+
+**ANSWER:**
+The proportion of private label sales made is fairly even across most of the income
+levels, however, the at the highest levels of income ($150 and above), there is a 
+decrease in percentage of private label sales as income increases.
+```{r Q6}
+brand_stats <- my_transaction_data %>% 
+  filter(!is.na(income_desc), !is.na(brand)) %>% 
+  mutate(income_desc = factor(income_desc, 
+                                 levels = c("Under 15K", "15-24K", "25-34K", "35-49K", 
+                                          "50-74K", "75-99K", "100-124K", "125-149K", 
+                                          "150-174K", "175-199K", "200-249K", "250K+"), 
+                                 ordered = TRUE)) %>%
+  group_by(income_desc, brand) %>% 
+  summarize(total_sales_value = sum(sales_value))
+  
+  ggplot(brand_stats) +
+  geom_bar(aes(x = income_desc, y = total_sales_value, fill = brand), 
+         stat='identity', position='fill')
+```
+
+---
+
+**Question 7**: 
+How often do retailers match the manufacturer's coupons? Hint: Filter the 
+data where `coupon_disc > 0` and find the percentage of these observations that 
+`coupon_match_disc < 0` is also true.
+
+**ANSWER:**
+Retailers match the manufacturer's coupons about 48% of them time
+```{r Q7}
+my_transaction_data %>% 
+  select(coupon_match_disc, coupon_disc) %>% 
+  filter(coupon_disc < 0) %>% 
+  summarise(retail_match_freq = mean(coupon_match_disc < 0))
+```
+
