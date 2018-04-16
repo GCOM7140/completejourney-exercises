@@ -1,7 +1,7 @@
 Data Wrangling Exercises
 ================
 
-The following 4 questions are based on concepts covered in Chapters 12-13 in R4DS and can be answered using The Complete Journey data. Start by loading the `tidyverse` and the `completejourney` package.
+The following four exercises are based on concepts covered in [Chapter 12](http://r4ds.had.co.nz/tidy-data.html) and [Chapter 13](http://r4ds.had.co.nz/relational-data.html) of [R for Data Science](http://r4ds.had.co.nz/). Use the `coupon`, `coupon_redempt`, `campaign_table`, `transaction_data`, and `product` datasets that come with the `completejourney` package to work on them, and start by loading the `tidyverse` and `completejourney` packages.
 
 ``` r
 library(tidyverse)
@@ -10,37 +10,37 @@ library(completejourney)
 
 ------------------------------------------------------------------------
 
-**Question 1**: What percentage of households redeemed at least 1 coupon from a mailed campaign? Hint: There are a few different ways to answer this question using joins. One possible solution is to:
+Exercise 1
+----------
 
-1.  Summarize the number of coupon redemptions for each household using `coupon_redempt`
-2.  Use `distinct()` on the `campaign_table` to produce a list of households sent a campaign
-3.  Use `left_join()` to match households sent a campaign (derived in Step 2) with ones that redeemed a coupon (derived in Step 1)
-4.  Determine the percentage of observations with non-missing counts meaning the join found a match in the summary of households with redeemed coupons
-
-*This question grows your ability to produce counts and statistics by using [`left_join()`](http://r4ds.had.co.nz/relational-data.html#outer-join) and examining resulting the `NA` records.*
+What percent of households that received the retailer's weekly mailer redeemed at least one coupon?
 
 ------------------------------------------------------------------------
 
-**Question 2**: How many households did not redeem a coupon? Hint: Similar to Question 1, generate a unique list of households who participated in campaign and and another list who redeemed a coupon. Then use `anti_join()` to return a list of household campaign participants who are not in the redeemed dataset. Finally, count the rows of that dataset.
-*This question tests how to count the non-existence of records between two tables using [`anti_join()`](http://r4ds.had.co.nz/relational-data.html#filtering-joins)*
+Exercise 2
+----------
+
+How many households did not redeem a coupon?
 
 ------------------------------------------------------------------------
 
-**Question 3**: What was the most popular product bought with campaign coupons? Hint: First join the `coupon` and `product` to get the product description for the coupons, and then join with the `coupon_redempt`. The product is described in `sub_commodity_desc`.
-*This question grows your ability to join data with [`inner_join()`](http://r4ds.had.co.nz/relational-data.html#inner-join) to guarantee existence in two datasets and then count on the merged dataset.*
+Exercise 3
+----------
+
+What percent of coupons promoted in the retailer's weekly mailer got redeemed at least once?
 
 ------------------------------------------------------------------------
 
-**Question 4**: Using the field `commodity_desc` determine which category spend grew the most? In order to calculate growth in sales, summarize the weekly spend per category then compare the first and last weeks. **Only consider categories with over $100 in total sales the first week**.
+Exercise 4
+----------
+
+Using the `transaction_data` and `product` datasets, determine which product category (i.e., `sub_commodity_desc`) grew the most in terms of revenue for the retailer in the second half of the study period (i.e., between `week_no == 52` and `week_no == 102`). Only consider product categories that had over $100 in revenue in week 52, and calculate revenue growth as a percentage of category revenue in week 52.
 
 Here are some suggested steps:
 
-1.  `group_by()` and `summarize()` the `sales_value` by `commodity_desc` and `week_no`
-2.  Take the first and last weeks using `filter(row_number() == 1 | row_number() == n())`
-3.  Re-group by category and create an indicator of the first and last week using `ifelse(row_number() == 1, 'first', 'last')`
-4.  Unselect the `week_no` column and `spread()` the data to put the first and last columns side-by-side for comparison
-5.  Calculate growth as `(last-first)/first`
-6.  `filter()` to only categories with &gt;= 100 in `first`
-7.  Finally, `arrange()` growth in descending order to determine the largest change
-
-*This question grows your ability to create a pipeline of data transformation steps to generate results. Specific functions include: [`group_by()` and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`select()`](http://r4ds.had.co.nz/transform.html#select-columns-with-select), [`spread()`](http://r4ds.had.co.nz/tidy-data.html#spreading), and [`arrange()`](http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange).*
+1.  Join the `transaction_data` and `product` datasets.
+2.  Group the data by `sub_commodity_desc` and `week_no`.
+3.  Calculate `sales_value` at the category level.
+4.  Filter the data to only include category revenues in weeks 52 and 102.
+5.  Create a new variable called `revenue_growth`, making use of the `lag()` function. Recognize that you only want to consider categories that had category revenues of at least $100 in week 52.
+6.  Arrange the data in descending order according to `revenue_growth`.
