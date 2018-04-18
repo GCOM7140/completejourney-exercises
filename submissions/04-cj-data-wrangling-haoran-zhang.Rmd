@@ -1,0 +1,88 @@
+---
+title: "Data Wrangling Exercises"
+Author: Haoran Zhang
+date: April 17, 2018
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r load-packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+
+library(completejourney)
+```
+
+---
+
+**Question 1**:
+What percentage of households redeemed at least 1 coupon from a mailed campaign? 
+
+
+```{r}
+left_join(
+  campaign_table %>% count(household_key),
+  coupon_redempt %>% count(household_key), by = 'household_key'
+) %>% 
+  summarize(redemption_rate = mean(!is.na(n.y)))
+```
+
+
+
+
+---
+
+**Question 2**:
+How many households did not redeem a coupon? 
+
+
+```{r}
+left_join(
+  campaign_table %>% count(household_key),
+  coupon_redempt %>% count(household_key), by = 'household_key'
+) %>% 
+  summarize(redemption_rate = sum(is.na(n.y)))
+
+```
+
+---
+
+**Question 3**:
+What was the most popular product bought with campaign coupons? 
+
+```{r}
+left_join(
+  coupon %>% count(coupon_upc),
+  coupon_redempt %>% count(coupon_upc), by = 'coupon_upc'
+) %>% 
+  summarize(redemption_rate = mean(!is.na(n.y)))
+
+```
+
+---
+
+**Question 4**:
+Using the field `commodity_desc` determine which category spend grew the most? In 
+order to calculate growth in sales, summarize the weekly spend per category 
+then compare the first and last weeks.
+
+
+ 
+```{r}
+left_join(transaction_data, product) %>%
+  group_by(sub_commodity_desc, week_no) %>%
+  summarize(sales_value_category = sum(sales_value, na.rm = TRUE)) %>%
+  filter(week_no == 52 | week_no == 102) %>%
+  mutate(
+    revenue_growth = ifelse(lag(sales_value_category) >= 100,
+                            (sales_value_category - lag(sales_value_category)) /
+                             lag(sales_value_category), NA)
+  ) %>%
+  arrange(desc(revenue_growth))
+
+#The top three growth categories are Fluid Milk Products, Frozen mean/meat dinners, and cheese in that order.
+```
