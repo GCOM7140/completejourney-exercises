@@ -5,6 +5,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+pdf(NULL)
 ```
 
 The following four exercises are based on concepts covered in 
@@ -25,16 +26,42 @@ library(completejourney)
 What percent of households that received the retailer's weekly mailer redeemed 
 at least one coupon?
 
+**ANSWER:**
+27% of households that received the weekly mailer redeemed a coupon
+```{r Q1}
+left_join(campaign_table %>% count(household_key), 
+  coupon_redempt %>% count(household_key), 
+  by = 'household_key') %>% 
+  summarize(redemption_rate = mean(!is.na(n.y)))
+```
+
 ---
 
 ## Exercise 2
-How many households did not redeem a coupon?   
+How many households did not redeem a coupon? 
+
+**ANSWER:**
+1,1500 households did not redeem
+```{r Q2}
+left_join(campaign_table %>% count(household_key),
+  coupon_redempt %>% count(household_key), 
+  by = 'household_key') %>% 
+  summarize(redemption_rate = sum(is.na(n.y)))
+```
 
 ---
 
 ## Exercise 3
 What percent of coupons promoted in the retailer's weekly mailer got redeemed at
 least once?
+
+**ANSWER:**
+49% of coupons that were promoted got redeemed at least once
+```{r Q3}
+left_join(coupon %>% count(coupon_upc),
+  coupon_redempt %>% count(coupon_upc), by = 'coupon_upc') %>% 
+  summarize(redemption_rate = mean(!is.na(n.y)))
+```
 
 ---
 
@@ -56,6 +83,21 @@ Here are some suggested steps:
  function. Recognize that you only want to consider categories that had category
  revenues of at least $100 in week 52.
  6. Arrange the data in descending order according to `revenue_growth`.
+ 
+ **ANSWER:**
+ Select beef grew the most in terms of revenue during the second half of the study
+```{r Q4}
+left_join(transaction_data, product) %>%
+  group_by(sub_commodity_desc, week_no) %>%
+  summarize(cat_sales_value = sum(sales_value, na.rm = TRUE)) %>%
+  filter(week_no == 52 | week_no == 102) %>%
+  mutate(
+    revenue_growth = ifelse(lag(cat_sales_value) >= 100,
+                            (cat_sales_value - lag(cat_sales_value)) /
+                             lag(cat_sales_value), NA)) %>%
+  arrange(desc(revenue_growth))
+```
+ 
 
 [G&W 2017]: http://r4ds.had.co.nz/
 [G&W 2017, 12]: http://r4ds.had.co.nz/tidy-data.html

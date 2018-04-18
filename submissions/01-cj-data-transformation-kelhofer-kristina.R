@@ -13,6 +13,7 @@ flights %>%
   select(dest) %>%
   nrow()
   #16174
+#√
 
 #How many flights flew out of LAX?
 flights %>%
@@ -20,20 +21,24 @@ flights %>%
   select(dest) %>%
   nrow()
   #0
+#√
 
 #How many flights are greater than or equal to 2000 miles?
 flights %>%
   filter(distance >= 2000) %>%
   nrow()
   #51695
+#√
 
 #How many flights were destined for airports in the Los Angeles area (LAX, ONT,
   #SNA, PSP, SBD, BUR, or LGB), but did not originate out of JFK?
 flights %>%
-  filter(dest %in% c("LAX","ONT","SNA", "PSP", "SBD","BUR", "LGB"),origin != "JFK") %>%
+  filter(dest %in% c("LAX","ONT","SNA", "PSP", "SBD","BUR", "LGB"),
+         origin != "JFK") %>%
   select(dest) %>%
   nrow()
   #5737
+
 
 #question 2
   flights %>%
@@ -44,7 +49,7 @@ flights %>%
 
 #question 3
   flights %>%
-    arrange(desc(is.na(arr_time))) %>%
+    arrange(desc(is.na(arr_time)), desc(arr_time)) %>%
     select(arr_time)
   #got stuck and googled!
   
@@ -60,7 +65,8 @@ flights %>%
     group_by(dest) %>%
     summarize(Tdelay = sum(dep_delay)) %>%
     mutate(prop_delay = Tdelay/ sum(Tdelay)) %>%
-    arrange(desc(prop_delay))
+    arrange(desc(prop_delay)) %>% 
+    head(3)
 
   #SFO, LAX, LAS
   
