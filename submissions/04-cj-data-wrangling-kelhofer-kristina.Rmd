@@ -33,9 +33,10 @@ possible solution is to:
 **Question 1 Solution**
 
 ```{r, echo=TRUE, eval=TRUE}
-group_by(coupon_redempt$household_key)
-```
+n_distinct(coupon_redempt$household_key)
 
+```
+434 households redeemed coupons
  
 *This question grows your ability to produce counts and statistics by using [`left_join()`](http://r4ds.had.co.nz/relational-data.html#outer-join) and examining resulting the `NA` records.*
 
@@ -54,8 +55,10 @@ participants who are not in the redeemed dataset. Finally, count the rows of tha
 campaign_participants <- distinct(campaign_table)
 campaign_redeemers <- distinct(coupon_redempt)
 campaign_non_redeemers <- anti_join(campaign_participants, campaign_redeemers, by = 'household_key')
+
+n_distinct(campaign_non_redeemers$household_key)
 ```
-4,470 households participated in the campaign but did not redeem a coupon.
+1150 households participated in the campaign but did not redeem a coupon.
 ---
 
 **Question 3**:
@@ -64,6 +67,21 @@ join the `coupon` and `product` to get the product description for
 the coupons, and then join with the `coupon_redempt`. The product is 
 described in `sub_commodity_desc`.  
 *This question grows your ability to join data with [`inner_join()`](http://r4ds.had.co.nz/relational-data.html#inner-join) to guarantee existence in two datasets and then count on the merged dataset.*
+
+```{r}
+coupon_product <- full_join(coupon, product, by = "product_id")
+head(coupon_product)
+coupon_redempt
+coupon_product_redempt <- full_join(coupon_product, coupon_redempt, by = "coupon_upc")
+
+coupon_product_redempt %>% 
+  group_by(sub_commodity_desc) %>% 
+  summarize(count = n()) %>% 
+  filter(count> 40000) %>% 
+  ggplot(aes(sub_commodity_desc, count)) + 
+  geom_col()
+```
+Premium! followed by Yogurt Not Multi-Packs
 
 ---
 
@@ -84,5 +102,33 @@ Here are some suggested steps:
  5. Calculate growth as `(last-first)/first`
  6. `filter()` to only categories with >= 100 in `first` 
  7. Finally, `arrange()` growth in descending order to determine the largest change
+ 
+```{r}
+head(product)
+
+left_join(product, transaction_data) %>% 
+  group_by(sales_value, commodity_desc, week_no) %>% 
+  summarize(product_week_sales = sum(sales_value)) %>% 
+  filter(week_no == 52 | week_no == 102) %>% 
+  filter(product_week_sales >= 100) %>% 
+  mutate(first = 1 if(row_number())) %>% 
+  mutate(last = 1 if(row_number(n)))
+  mutate(growth = (last/first)/first) %>% 
+  arrange(-growth)
+
+  
+  left_join(transaction_data, product) %>%
+  group_by(sub_commodity_desc, week_no) %>%
+  summarize(sales_value_category = sum(sales_value, na.rm = TRUE)) %>%
+  filter(week_no == 52 | week_no == 102) %>%
+  mutate(
+    revenue_growth = ifelse(lag(sales_value_category) >= 100,
+                            (sales_value_category - lag(sales_value_category)) /
+                             lag(sales_value_category), NA)
+  ) %>%
+  arrange(desc(revenue_growth))
+
+```
+ **struggled and had to look at solution
  
 *This question grows your ability to create a pipeline of data transformation steps to generate results. Specific functions include: [`group_by()` and `summarize()`](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise), [`filter()`](http://r4ds.had.co.nz/transform.html#filter-rows-with-filter), [`mutate()`](http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate), [`select()`](http://r4ds.had.co.nz/transform.html#select-columns-with-select), [`spread()`](http://r4ds.had.co.nz/tidy-data.html#spreading), and [`arrange()`](http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange).*
