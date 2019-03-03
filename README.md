@@ -3,14 +3,14 @@
 
 ## Package Overview
 
-The `completejourney` package originates from the Complete Journey Study
-provided by [84.51](http://www.8451.com) and includes data that
-represent one year of grocery store shopping transactions for a group of
-2,469 households who were frequent shoppers at a grocery retailer. These
-data capture all of these households’ purchases, not just those from a
-limited number of categories. For certain households, demographic
-information as well as direct marketing contact history are available.
-The `completejourney` package comes with the following datasets:
+The `completejourney` package originates from 84.51’s Complete Journey
+Study and includes data representing one year of grocery store shopping
+transactions for a group of 2,469 households who were frequent shoppers
+at a grocery retailer. These data capture all of these households’
+purchases, not just those from a limited number of categories. For
+certain households, demographic information as well as direct marketing
+contact history are available. The `completejourney` package comes with
+the following datasets:
 
   - `transactions`: receipt information for purchases made by households
   - `products`: product metadata (brand, description, etc.)
