@@ -74,8 +74,8 @@ Solutions:
  4. [Data Wrangling][data wrangling solutions]
  5. [Brandefy Private Label Case][brandefy case solutions]
 
-[brandefy case exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/05-brandefy-private-label-case-exercises.md
-[brandefy case solutions]: https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/05-brandefy-private-label-case-solutions.md
+[brandefy case exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/05-brandefy-private-label-case-exercises.md#brandefy-private-label-case-exercises
+[brandefy case solutions]: https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/05-brandefy-private-label-case-solutions.md#brandefy-private-label-case-solutions
 [data transformation exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/01-data-transformation-exercises.md#data-transformation-exercises
 [data transformation solutions]: https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/01-data-transformation-solutions.md#data-transformation-solutions
 [data visualization exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/02-data-visualization-exercises.md#data-visualization-exercises
