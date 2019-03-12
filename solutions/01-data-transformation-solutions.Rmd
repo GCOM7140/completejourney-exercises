@@ -7,23 +7,25 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The following five questions are based on concepts covered in 
-[Chapter 5][chapter 5] of [R4DS][r4ds]. Answer them using `transaction_data` in
-the Complete Journey data package and start by loading the `tidyverse` and 
-`completejourney` packages.
+The following questions are based on concepts covered in [Chapter 5][chapter 5]
+of R4DS, and answers to them lie in the `transactions` dataset of the
+completejourney package. Load the tidyverse and completejourney packages to
+start working on them.
 
 ```{r load-packages, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(completejourney)
+```
 
-transaction_data <- transaction_data %>% 
-  select(
-    quantity,
-    sales_value, 
-    retail_disc, coupon_disc, coupon_match_disc,
-    household_key, store_id, basket_id, product_id, 
-    week_no, day, trans_time
-  )
+**Note**: If printing the completjourney package's datasets to the console is
+throwing you a warning that 'along' is being autocompleted as 'along.with', you
+might want to toggle `warnPartialMatchArgs` off. Jenny Bryan writes that she has
+been doing this a lot of late [here][jenny on github]. When the next version of
+R is released, the bug causing this error will be fixed. For now, you can toggle
+`warnPartialMatchArgs` off with:
+
+```{r}
+options(warnPartialMatchArgs = FALSE)
 ```
 
 ---
@@ -33,12 +35,11 @@ transaction_data <- transaction_data %>%
 
 **Hint:** Use the `abs()` function within [`mutate()`][mutate]. 
 
-This question is designed to strengthen your ability to use the `dplyr` 
-verb [`mutate()`][mutate] to overwrite an existing variable.
+We designed this question to strengthen your ability to use the dplyr verb
+[`mutate()`][mutate] for the purposes of overwriting existing variables.
 
-**Answer**:
-```{r}
-transaction_data <- transaction_data %>% 
+```{r include = TRUE}
+transactions <- transactions %>% 
   mutate(
     retail_disc       = abs(retail_disc),
     coupon_disc       = abs(coupon_disc),
@@ -57,85 +58,82 @@ loyalty_price = (sales_value + coupon_match_disc) / quantity
 coupon_price  = (sales_value - coupon_disc) / quantity
 ```
 
+We designed this question to strengthen your ability to use the dplyr verb
+[`mutate()`][mutate] to create new variables. It should also help you develop a
+better understanding of the discount variables in `transactions`.
 
-This question is designed to strengthen your ability to use the `dplyr` verb 
-[`mutate()`][mutate] to create new variables from existing ones. It should also
-help you develop a better understanding of the discount variables in 
-`transaction_data`.
-
-**Answer:**
-```{r}
-(transaction_data <- transaction_data %>% 
+```{r include = TRUE}
+(transactions <- transactions %>% 
   mutate(
-    regular_price     = (sales_value + retail_disc + coupon_match_disc) / 
-                        quantity,
-    loyalty_price     = (sales_value + coupon_match_disc) / 
-                        quantity,
-    coupon_price      = (sales_value - coupon_disc) / 
-                        quantity
-  ) %>% 
-  select(regular_price, loyalty_price, coupon_price, everything())
+    regular_price = (sales_value + retail_disc + coupon_match_disc) / 
+                     quantity,
+    loyalty_price = (sales_value + coupon_match_disc) / 
+                     quantity,
+    coupon_price  = (sales_value - coupon_disc) / 
+                     quantity
+  )
 )
 ```
 
 ---
 
-**Question 3**: `transaction_data` includes 92,339 unique product IDs. How many 
-of these products (not transactions!) had a regular price of one dollar or less? 
-What does this count equal for loyalty and coupon prices?
+**Question 3**: The `transactions` dataset includes 68,509 unique product IDs.
+How many of these products (not transactions!) had a regular price of one dollar
+or less? What does this count equal for loyalty price and coupon price?
 
-**Hint:** After filtering, select the `product_id` column and count unique 
-products using the `n_distinct()` function. 
+**Hint:** After filtering, select the `product_id` column, then count the number
+of unique products using the `n_distinct()` function.
 
-This question is designed to strengthen your ability to use the `dplyr` verbs 
+We designed this question to strengthen your ability to use the dplyr verbs
 [`filter()`][filter] and [`select()`][select].
 
-**Answer:**
-
-12,442 products had a regular price less than or equal to $1.00. This count for 
-loyalty price is 20,113 products. For coupon price, it's 22,273. These numbers 
-indicate that over 7,500 products were discounted to a dollar or less with 
-loyalty-card promotions or coupons.
-
-```{r}
-transaction_data %>% 
+```{r include = TRUE}
+transactions %>% 
   filter(regular_price <= 1) %>% 
   select(product_id) %>% 
   n_distinct()
 
-transaction_data %>% 
+# 8,698 products had a regular price less than or equal to $1.00.
+
+transactions %>% 
   filter(loyalty_price <= 1) %>% 
   select(product_id) %>% 
   n_distinct()
 
-transaction_data %>% 
+# This count for loyalty price is 14,043 products.
+
+transactions %>% 
   filter(coupon_price <= 1) %>% 
   select(product_id) %>% 
   n_distinct()
+
+# For coupon price, it's higher still at 15,676. 
+
+# These numbers indicate that over 5,300 products were discounted to a dollar or
+# less with loyalty-card promotions or coupons.
 ```
 
 ---
 
 **Question 4**: What proportion of baskets are over $10 in sales value? 
 
-**Hint:** You need to use [`group_by()`][summarize], [`summarize()`][summarize], 
-and [`ungroup()`][ungroup]. Summarize over all baskets. In the last step, you 
-can calculate the proportion by taking the mean of `TRUE/FALSE` values. Use 
-`mean(basket_value > 10)` to get the proportion over $10. 
+**Hint:** You need to use [`group_by()`][summarize], [`summarize()`][summarize],
+and [`ungroup()`][ungroup]. As a last step, you can calculate the proportion by
+taking the mean of `TRUE/FALSE` values, using `mean(basket_value > 10)` to get
+the proportion over $10.
 
-This question is designed to strengthen your ability to use the `dplyr` verbs 
-[`group_by()`][summarize], [`summarize()`][summarize] and [`ungroup()`][ungroup].
+We designed this question to strengthen your ability to use the dplyr verbs
+[`group_by()`][summarize], [`summarize()`][summarize] and
+[`ungroup()`][ungroup].
 
-**Answer:**
-
-Approximately 65% of baskets bring the retailer over $10 in value.
-
-```{r}
-transaction_data %>%
+```{r include = TRUE}
+transactions %>%
   group_by(basket_id) %>%
   summarize(basket_value = sum(sales_value)) %>%
   ungroup() %>%
-  summarize(proportion_over_10 = mean(basket_value > 10))
+  summarize(proportion_over_10 = round(mean(basket_value > 10) * 100, 0))
+
+# Approximately 66% of customers' baskets bring the retailer over $10 in value.
 ```
 
 ---
@@ -150,19 +148,13 @@ using the following logic:
 pct_loyalty_disc = 1 - (loyalty_price / regular_price)
 ```
 
-This question is designed to strengthen your ability to use the `dplyr` verbs 
+We designed this question to strengthen your ability to use the dplyr verbs 
 [`filter()`][filter], [`mutate()`][mutate], [`group_by()`][summarize], 
 [`summarize()`][summarize], and [`arrange()`][arrange] (i.e., 
-almost everything covered in [Chapter 5][chapter 5].
+almost everything covered in [Chapter 5][chapter 5] of R4DS).
 
-**Answer:**
-
-`store_id == 341` has, on average, a discount of 18.8% off regular price for 
-members of the retailer's loyalty program. The code below returns all stores in 
-rank order to give a sense of how similar the discounting is (not) between 
-stores.
-```{r}
-transaction_data %>%
+```{r include = TRUE}
+transactions %>%
   filter(
     is.finite(regular_price), 
     is.finite(loyalty_price), 
@@ -178,13 +170,19 @@ transaction_data %>%
   ) %>%
   filter(total_sales_value > 10000) %>%
   arrange(desc(avg_pct_loyalty_disc))
+
+# store_id == 341 has, on average, a discount of 18.7% off regular prices for
+# members of the retailer's loyalty program. The code below returns all stores
+# in rank order to give a sense of how (dis)similar the discounting is between
+# stores.
 ```
 
-[chapter 5]: http://r4ds.had.co.nz/transform.html
-[r4ds]: http://r4ds.had.co.nz/
 [arrange]: http://r4ds.had.co.nz/transform.html#arrange-rows-with-arrange
-[select]: http://r4ds.had.co.nz/transform.html#select-columns-with-select
-[mutate]: http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate
+[chapter 5]: http://r4ds.had.co.nz/transform.html
 [filter]: http://r4ds.had.co.nz/transform.html#filter-rows-with-filter
+[jenny on github]: https://github.com/tidyverse/tidyr/issues/519#issuecomment-439148810
+[mutate]: http://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate
+[r4ds]: http://r4ds.had.co.nz/
+[select]: http://r4ds.had.co.nz/transform.html#select-columns-with-select
 [summarize]: http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise
 [ungroup]: http://r4ds.had.co.nz/transform.html#ungrouping
