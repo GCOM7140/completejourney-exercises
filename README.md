@@ -45,6 +45,13 @@ load the full suite of complete journey datasets, also available at
 More information on the completejourney package can be found at:
 [bradleyboehmke.github.io/completejourney][completejourney].
 
+### Recommended Preparation
+We wrote the exercises and solutions in this repository in a way that emphasizes
+"tidy" data principles, the tidyverse, and other practices covered in [R for
+Data Science][r4ds]. Reviewing relevant parts of R4DS carefully *before*
+attempting to complete these exercises is the best way to ensure that this
+homework assignment will help you grow as a data scientist.
+
 ### Working on the Exercises
 Below are links to the exercises in this repository. You can also find them by
 navigating to the [exercises][exercises] folder of this repository and clicking
