@@ -1,36 +1,39 @@
 Data Visualization Exercises
 ================
 
-The following five questions are based on concepts covered in [Chapter 3 of R4DS](http://r4ds.had.co.nz/data-visualisation.html). They can be answered using the `transaction_data` and `product` datasets from the `completejourney` package. Start by loading the `tidyverse` and `completejourney` packages.
+The following questions are based on concepts covered in [Chapter 3](http://r4ds.had.co.nz/data-visualisation.html) of R4DS, and answers to them lie in the `transactions` and `products` datasets of the completejourney package. Load the tidyverse, completejourney, and lubridate packages to start working on them.
 
 ``` r
 library(tidyverse)
 library(completejourney)
+library(lubridate) # see chapter 16 of r4ds
 ```
 
 ------------------------------------------------------------------------
 
 **Question 1**: Create a histogram of `quantity`. What, if anything, do you find unusual about this visualization?
 
-This question is designed to strengthen your ability to use `geom_histogram()`.
+We designed this question to strengthen your ability to use `geom_histogram()`.
 
 ------------------------------------------------------------------------
 
-**Question 2**: Use a line graph to plot total sales value by day. What, if anything, do you find unusual about this visualization?
+**Question 2**: Use a line graph to plot total sales value by day of the year. What, if anything, do you find unusual about this visualization?
 
-This question is designed to strengthen your ability to use `dplyr` verbs in combination with `geom_line()`.
+We designed this question to strengthen your ability to use dplyr verbs in combination with `geom_line()`.
+
+**Hint**: Get the day of the year from the `transaction_timestamp` variable in the `transactions` dataset with the [`yday()`](https://r4ds.had.co.nz/dates-and-times.html#date-time-components) function of the lubridate package.
 
 ------------------------------------------------------------------------
 
-**Question 3**: Use a bar graph to compare the total sales values of national and private-label brands.
+**Question 3**: Use a bar graph to compare the total sales value of national brands with that of private-label brands using the `brand` variable in the `products` dataset.
 
-**Hint**: Because `transaction_data` does not contain product metadata, run the code below to create a new dataset with additional product information in it. Use `my_transaction_data` for your answer.
+**Hint**: Because `transactions` does not contain product metadata, run the code below to create a new dataset with additional product information in it. Then, use `transactions_products` for your answer.
 
 ``` r
-my_transaction_data <- left_join(transaction_data, product, by = 'product_id')
+transactions_products <- left_join(transactions, products, by = 'product_id')
 ```
 
-This question is designed to strengthen your ability to use `dplyr` verbs in combination with `geom_bar()` along with its `stat` argument.
+We designed this question to strengthen your ability to use dplyr verbs in combination with `geom_bar()` and its `stat` argument (see [here](https://r4ds.had.co.nz/data-visualisation.html#statistical-transformations)).
 
 ------------------------------------------------------------------------
 
@@ -38,19 +41,10 @@ This question is designed to strengthen your ability to use `dplyr` verbs in com
 
 **Hint**: Follow these three steps to create your plot:
 
--   Filter `my_transaction_data` to include only transactions with `commodity_desc` equal to "SOFT DRINKS" or "CHEESE"
--   Calculate total sales value by `commodity_desc` and `brand`
--   Create the bars using `geom_bar` with `stat = 'identity'` and `position = 'fill'`
+-   Filter `transactions_products` to include only transactions with `product_category` equal to "SOFT DRINKS" or "CHEESE"
+-   Calculate total sales value by `product_category` and `brand`
+-   Create the bars using `geom_bar()` with `stat = 'identity'` and `position =  'fill'`
 
 ------------------------------------------------------------------------
 
-**Question 5**: The code below filters `my_transaction_data` to include only peanut better, jelly, and jam transactions. Then it creates a new variable named `product_size` equal to product size in ounces. Create a bar graph with `pb_and_j_data` to visualize the distribution of the retailer's PB&J transactions by product size. Which two product sizes are the most popular?
-
-``` r
-pb_and_j_data <- my_transaction_data %>% 
-  filter(commodity_desc == 'PNT BTR/JELLY/JAMS') %>%
-  mutate(
-    product_size = as.factor(as.integer(gsub('([0-9]+)([[:space:]]*OZ)', '\\1',
-                                             curr_size_of_product)))
-  )
-```
+**Question 5**: Filter `transactions_products` for transactions in the peanut better, jelly, and jams product category (i.e., `"PNT BTR/JELLY/JAMS"`). Then, create a bar graph to visualize the distribution of the retailer's PB&J transactions by package size. Which two package sizes are the most popular?
