@@ -63,7 +63,9 @@ Exercises:
  2. [Data Visualization][data visualization exercises]
  3. [Exploratory Data Analysis][eda exercises]
  4. [Data Wrangling][data wrangling exercises]
+<!---
  5. [Brandefy Private Label Case][brandefy case exercises]
+-->
 
 ### Reviewing the Solutions
 After working through these exercises, have a look at the solutions provided in
