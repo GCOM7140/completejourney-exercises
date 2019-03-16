@@ -23,8 +23,8 @@ ggplot(data = transactions) +
 ![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 ``` r
-# The unusual aspect of the bar chart is its extremely long tail. The distance
-# is so far that the bar chart almost appears to be a single bar at zero. This
+# The unusual aspect of the histogram is its extremely long tail. The distance
+# is so far that the histogram almost appears to be a single bar at zero. This
 # distortion warrants additional steps (e.g., `filter(quantity <= 10)`).
 
 ggplot(data = transactions %>% filter(quantity <= 10)) + 

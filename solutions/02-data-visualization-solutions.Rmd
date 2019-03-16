@@ -30,8 +30,8 @@ distribution of a continuous variable with the `geom_histogram()` function.
 ggplot(data = transactions) + 
   geom_histogram(mapping = aes(x = quantity))
 
-# The unusual aspect of the bar chart is its extremely long tail. The distance
-# is so far that the bar chart almost appears to be a single bar at zero. This
+# The unusual aspect of the histogram is its extremely long tail. The distance
+# is so far that the histogram almost appears to be a single bar at zero. This
 # distortion warrants additional steps (e.g., `filter(quantity <= 10)`).
 
 ggplot(data = transactions %>% filter(quantity <= 10)) + 
