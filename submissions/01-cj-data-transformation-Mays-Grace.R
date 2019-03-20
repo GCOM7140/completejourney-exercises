@@ -41,11 +41,11 @@ transactions %>%
 #Question 5: Which store with over $10K in total sales_value discounts its products the most for loyal customers?
 
 transactions %>%
+  filter(is.finite(regular_price), is.finite(loyalty_price), regular_price > 0) %>% 
   mutate(pct_loyalty_disc = 1 - (loyalty_price / regular_price)) %>%
   group_by(store_id) %>%
   summarize(total_sales_value = sum(sales_value), avg_pct_loyalty_disc = mean(pct_loyalty_disc)) %>%
   filter(total_sales_value > 10000) %>%
   arrange(avg_pct_loyalty_disc)
-  
   
   
