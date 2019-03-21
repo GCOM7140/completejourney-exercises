@@ -86,8 +86,21 @@ Solutions:
  5. [Brandefy Private Label Case][brandefy case solutions]
 -->
 
+## Submitting your Work
+
+Add your answers to the [submissions] folder for submission purposes. Please use
+the following file-name convention for your submissions:
+
+- 01_cj-data-transformation-lastname-firstname (.R or .R/.md or .Rmd / .md)
+- 02_cj-data-visualization-lastname-firstname (.R or .R/.md or .Rmd / .md)
+- 03_cj-exploratory-data-analysis-lastname-firstname (.R or .R/.md or .Rmd /
+.md)
+- 04_cj-data-wrangling-lastname-firstname (.R or .R/.md or .Rmd / .md)
+
+
 [area51]: https://www.8451.com/area51/
 [brandefy case exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/05-brandefy-private-label-case-exercises.md#brandefy-private-label-case-exercises
+[completejourney]: https://bradleyboehmke.github.io/completejourney/
 [brandefy case solutions]: https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/05-brandefy-private-label-case-solutions.md#brandefy-private-label-case-solutions
 [data transformation exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/01-data-transformation-exercises.md#data-transformation-exercises
 [data transformation solutions]: https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/01-data-transformation-solutions.md#data-transformation-solutions
@@ -98,9 +111,9 @@ Solutions:
 [eda exercises]: https://github.com/GCOM7140/completejourney-exercises/blob/master/exercises/03-exploratory-data-analysis-exercises.md#exploratory-data-analysis-eda-exercises
 [eda solutions]: https://github.com/GCOM7140/completejourney-exercises/blob/master/solutions/03-exploratory-data-analysis-solutions.md#exploratory-data-analysis-eda-solutions
 [brad]: https://github.com/bradleyboehmke
-[completejourney]: https://bradleyboehmke.github.io/completejourney/
 [exercises]: https://github.com/GCOM7140/completejourney-exercises/tree/master/exercises
 [jonathan]: https://github.com/jonathan-eman
 [r4ds]: http://r4ds.had.co.nz/index.html
 [steve]: https://github.com/StevenMMortimer
+[submissions]: https://github.com/GCOM7140/completejourney-exercises/tree/master/submissions
 [solutions]: https://github.com/GCOM7140/completejourney-exercises/tree/master/solutions
