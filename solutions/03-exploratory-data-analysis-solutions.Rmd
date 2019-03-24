@@ -21,8 +21,9 @@ After running the following code, use `my_transaction_data` to work on the
 following exercises.
 
 ```{r echo = TRUE}
-trans_prods_hhs <- left_join(transactions, products, by = "product_id") %>% 
+left_join(transactions, products, by = "product_id") %>% 
    left_join(demographics, by = "household_id") %>%
+   filter(quantity != 0) %>%
    mutate(
      regular_price  = (sales_value + retail_disc + coupon_match_disc) /
                        quantity,
@@ -35,28 +36,30 @@ trans_prods_hhs <- left_join(transactions, products, by = "product_id") %>%
                                                              regular_price
        )
      )
-   )
+   ) -> my_transaction_data
   
 ```
 
 ---
 
-**Question 1**: How many unique households exist in `trans_prods_hhs`, and how
-many of these households have demographic data in `hh_demographic`?
+**Question 1**: How many unique households exist in `my_transaction_data`, and how many of these households have demographic data in `demographics`?
 
- a. Use `distinct()` to create a tibble of unique `household_key` values.
+ a. Use `distinct()` to create a tibble of unique `household_id` values.
  b. Use `nrow()` to count these households.
- c. Use `inner_join()` to match `my_transaction_data` with `hh_demographic`.
+ c. Use `inner_join()` to match `my_transaction_data` with `demographics`.
  d. Use `distinct()` and `nrow()` to count the rows that remain.
 
 ```{r include = TRUE, eval = TRUE}
-trans_prods_hhs %>% 
+my_transaction_data %>% 
   distinct(household_id) %>% 
   nrow()
 
-inner_join(trans_prods_hhs, demographics, by = "household_id") %>% 
+inner_join(my_transaction_data, demographics, by = "household_id") %>% 
   distinct(household_id) %>% 
   nrow()
+
+# There are 2,469 unique households in my_transaction_data, 801 of which have
+# data in demographics.
 ```
  
 ---
@@ -64,13 +67,13 @@ inner_join(trans_prods_hhs, demographics, by = "household_id") %>%
 **Question 2**: Determine median weekly spend per individual using the following
 tibble (i.e., `exercise_2`).
 
-```{r echo = TRUE}
-inner_join(my_transaction_data, hh_demographic) %>% 
+```{r echo = TRUE, message = FALSE, warning = FALSE}
+inner_join(my_transaction_data, demographics) %>% 
    mutate(
-     hh_size          = str_replace(household_size_desc, '5\\+', '5') %>% 
+     hh_size          = str_replace(household_size, "5\\+", "5") %>% 
                          as.integer()
    ) %>% 
-   group_by(household_key, week_no) %>% 
+   group_by(household_id, week) %>% 
    summarize(
      total_spend      = sum(purchase_price, na.rm = TRUE),
      hh_size          = max(hh_size,        na.rm = TRUE)
@@ -86,6 +89,8 @@ exercise_2 %>%
   summarize(
     med_wkly_spend_per_ind = median(wkly_spend_per_ind, na.rm = TRUE)
   )
+
+# Median weekly spending is $23.80.
 ```
 
 ---
@@ -109,24 +114,23 @@ exercise_2 %>%
 have beer in them too? Legend has it that placing these two product categories
 closer together can increase beer sales [(Powers 2002)][Powers 2002]. Using the
 following starter code, calculate [lift][Wikipedia, lift] for the "association
-rule" that diapers in a basket (i.e., `sub_commodity_desc == "BABY DIAPERS"`)
-imply beer is in the basket (i.e., `sub_commodity_desc == "BEERALEMALT
-LIQUORS"`). Is the association between these products practically significant in
-`trans_prods_hhs`?
+rule" that diapers in a basket (i.e., `product_type == "BABY DIAPERS"`)
+imply beer is in the basket (i.e., `product_type == "BEERALEMALT LIQUORS"`). Is the association between these products practically significant in
+`my_transaction_data`?
 
-```{r echo = TRUE, eval = FALSE}
-inner_join(my_transaction_data, product) %>% 
+```{r echo = TRUE, eval = FALSE, warning = FALSE, message = FALSE}
+inner_join(my_transaction_data, products) %>% 
   mutate(
-    diapers = sub_commodity_desc == 'BABY DIAPERS', 
-    beer    = sub_commodity_desc == 'BEERALEMALT LIQUORS'
+    diapers = product_type == "BABY DIAPERS", 
+    beer    = product_type == "BEERALEMALT LIQUORS"
   )
 ```
 
-```{r include = TRUE, eval = TRUE}
-inner_join(my_transaction_data, product) %>% 
+```{r include = TRUE, eval = TRUE, warning = FALSE, message = FALSE}
+inner_join(my_transaction_data, products) %>% 
   mutate(
-    diapers = sub_commodity_desc == 'BABY DIAPERS', 
-    beer    = sub_commodity_desc == 'BEERALEMALT LIQUORS'
+    diapers = product_type == "BABY DIAPERS", 
+    beer    = product_type == "BEERALEMALT LIQUORS"
   ) %>%
   group_by(basket_id) %>%
   summarize(
@@ -144,24 +148,24 @@ inner_join(my_transaction_data, product) %>%
 ---
 
 **Question 5**: Using a stacked bar chart that's partitioned by income level
-(i.e., `income_desc`), visualize the total amount of money customers spent on
+(i.e., `income`), visualize the total amount of money customers spent on
 national-brand products versus private-label products.
 
-```{r include = TRUE, eval = TRUE}
-inner_join(my_transaction_data, hh_demographic) %>% 
+```{r include = TRUE, eval = TRUE, warning = FALSE, message = FALSE}
+inner_join(my_transaction_data, demographics) %>% 
   mutate(
-    income_desc = factor(income_desc, 
-                         levels = c('Under 15K',   '15-24K',   '25-34K', 
-                                       '35-49K',   '50-74K',   '75-99K', 
-                                     '100-124K', '125-149K', '150-174K', 
-                                     '175-199K', '200-249K',    '250K+'),
+    income = factor(income, 
+                         levels = c("Under 15K",   "15-24K",   "25-34K", 
+                                       "35-49K",   "50-74K",   "75-99K", 
+                                     "100-124K", "125-149K", "150-174K", 
+                                     "175-199K", "200-249K",    "250K+"),
                          ordered = TRUE)
   ) %>%
-  group_by(income_desc, brand) %>%
+  group_by(income, brand) %>%
   summarize(total_spend = sum(purchase_price)) %>% 
   ggplot() +
-  geom_col(aes(x = income_desc, y = total_spend, fill = brand), 
-           position = 'fill') + 
+  geom_col(aes(x = income, y = total_spend, fill = brand), 
+           position = "fill") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
