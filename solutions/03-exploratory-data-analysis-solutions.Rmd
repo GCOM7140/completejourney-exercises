@@ -4,7 +4,7 @@ output: github_document
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 The following questions are based on concepts covered in [Chapter 7][chapter 7]
@@ -12,7 +12,7 @@ of R4DS, and answers to them lie in the `transactions` and `products` datasets
 of the completejourney package. Load the tidyverse, completejourney, and
 lubridate packages to start working on them.
 
-```{r warning = FALSE, message = FALSE}
+```{r}
 library(tidyverse)
 library(completejourney)
 ```
@@ -67,7 +67,7 @@ inner_join(my_transaction_data, demographics, by = "household_id") %>%
 **Question 2**: Determine median weekly spend per individual using the following
 tibble (i.e., `exercise_2`).
 
-```{r echo = TRUE, message = FALSE, warning = FALSE}
+```{r echo = TRUE}
 inner_join(my_transaction_data, demographics) %>% 
    mutate(
      hh_size          = str_replace(household_size, "5\\+", "5") %>% 
@@ -118,7 +118,7 @@ rule" that diapers in a basket (i.e., `product_type == "BABY DIAPERS"`)
 imply beer is in the basket (i.e., `product_type == "BEERALEMALT LIQUORS"`). Is the association between these products practically significant in
 `my_transaction_data`?
 
-```{r echo = TRUE, eval = FALSE, warning = FALSE, message = FALSE}
+```{r echo = TRUE, eval = FALSE}
 inner_join(my_transaction_data, products) %>% 
   mutate(
     diapers = product_type == "BABY DIAPERS", 
@@ -126,32 +126,46 @@ inner_join(my_transaction_data, products) %>%
   )
 ```
 
-```{r include = TRUE, eval = TRUE, warning = FALSE, message = FALSE}
+```{r include = TRUE, eval = TRUE}
 inner_join(my_transaction_data, products) %>% 
-  mutate(
-    diapers = product_type == "BABY DIAPERS", 
-    beer    = product_type == "BEERALEMALT LIQUORS"
-  ) %>%
-  group_by(basket_id) %>%
-  summarize(
-    basket_has_diapers = max(diapers), 
-    basket_has_beer    = max(beer)
-  ) %>% 
-  summarize(
-    prop_both   = sum(basket_has_diapers * basket_has_beer == 1) / 
-                  sum(basket_has_diapers == 1),
-    prob_beer   = mean(basket_has_beer),
-    diaper_lift = prop_both / prob_beer
-  )
+   mutate(
+      diapers = product_type == "BABY DIAPERS", 
+      beer    = product_type == "BEERALEMALT LIQUORS"
+   ) %>%
+   group_by(basket_id) %>%
+   summarize(
+      basket_has_diapers = max(diapers), 
+      basket_has_beer    = max(beer)
+   ) %>% 
+   filter(!is.na(basket_has_diapers)) %>% # not sure why this is necessary
+   summarize(
+      prop_both   = sum(basket_has_diapers * basket_has_beer == 1) / 
+         sum(basket_has_diapers == 1),
+      prob_beer   = mean(basket_has_beer),
+      diaper_lift = prop_both / prob_beer
+   )
 ```
 
 ---
 
 **Question 5**: Using a stacked bar chart that's partitioned by income level
 (i.e., `income`), visualize the total amount of money customers spent on
-national-brand products versus private-label products.
+national-brand products versus private-label products. Start with the following code:
 
-```{r include = TRUE, eval = TRUE, warning = FALSE, message = FALSE}
+```{r}
+inner_join(my_transaction_data, demographics) %>% 
+  mutate(
+    income = factor(income, 
+                         levels = c("Under 15K",   "15-24K",   "25-34K", 
+                                       "35-49K",   "50-74K",   "75-99K", 
+                                     "100-124K", "125-149K", "150-174K", 
+                                     "175-199K", "200-249K",    "250K+"),
+                         ordered = TRUE)
+  )
+```
+
+
+```{r include = TRUE, eval = TRUE}
 inner_join(my_transaction_data, demographics) %>% 
   mutate(
     income = factor(income, 

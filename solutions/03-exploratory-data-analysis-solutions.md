@@ -126,31 +126,66 @@ inner_join(my_transaction_data, products) %>%
 
 ``` r
 inner_join(my_transaction_data, products) %>% 
-  mutate(
-    diapers = product_type == "BABY DIAPERS", 
-    beer    = product_type == "BEERALEMALT LIQUORS"
-  ) %>%
-  group_by(basket_id) %>%
-  summarize(
-    basket_has_diapers = max(diapers), 
-    basket_has_beer    = max(beer)
-  ) %>% 
-  summarize(
-    prop_both   = sum(basket_has_diapers * basket_has_beer == 1) / 
-                  sum(basket_has_diapers == 1),
-    prob_beer   = mean(basket_has_beer),
-    diaper_lift = prop_both / prob_beer
-  )
+   mutate(
+      diapers = product_type == "BABY DIAPERS", 
+      beer    = product_type == "BEERALEMALT LIQUORS"
+   ) %>%
+   group_by(basket_id) %>%
+   summarize(
+      basket_has_diapers = max(diapers), 
+      basket_has_beer    = max(beer)
+   ) %>% 
+   filter(!is.na(basket_has_diapers)) %>% # not sure why this is necessary
+   summarize(
+      prop_both   = sum(basket_has_diapers * basket_has_beer == 1) / 
+         sum(basket_has_diapers == 1),
+      prob_beer   = mean(basket_has_beer),
+      diaper_lift = prop_both / prob_beer
+   )
 ```
 
     ## # A tibble: 1 x 3
     ##   prop_both prob_beer diaper_lift
     ##       <dbl>     <dbl>       <dbl>
-    ## 1    0.0557    0.0554        1.01
+    ## 1    0.0552    0.0554       0.996
 
 ------------------------------------------------------------------------
 
-**Question 5**: Using a stacked bar chart that's partitioned by income level (i.e., `income`), visualize the total amount of money customers spent on national-brand products versus private-label products.
+**Question 5**: Using a stacked bar chart that's partitioned by income level (i.e., `income`), visualize the total amount of money customers spent on national-brand products versus private-label products. Start with the following code:
+
+``` r
+inner_join(my_transaction_data, demographics) %>% 
+  mutate(
+    income = factor(income, 
+                         levels = c("Under 15K",   "15-24K",   "25-34K", 
+                                       "35-49K",   "50-74K",   "75-99K", 
+                                     "100-124K", "125-149K", "150-174K", 
+                                     "175-199K", "200-249K",    "250K+"),
+                         ordered = TRUE)
+  )
+```
+
+    ## # A tibble: 823,670 x 28
+    ##    household_id store_id basket_id product_id quantity sales_value
+    ##    <chr>        <chr>    <chr>     <chr>         <dbl>       <dbl>
+    ##  1 900          330      31198570~ 1095275           1        0.5 
+    ##  2 900          330      31198570~ 9878513           1        0.99
+    ##  3 1228         406      31198655~ 1041453           1        1.43
+    ##  4 906          319      31198705~ 1020156           1        1.5 
+    ##  5 906          319      31198705~ 1053875           2        2.78
+    ##  6 906          319      31198705~ 1060312           1        5.49
+    ##  7 906          319      31198705~ 1075313           1        1.5 
+    ##  8 1419         32004    31198515~ 1037894           1        1   
+    ##  9 1419         32004    31198515~ 1069175           1        1.29
+    ## 10 1873         361      31198640~ 834484            1        0.66
+    ## # ... with 823,660 more rows, and 22 more variables: retail_disc <dbl>,
+    ## #   coupon_disc <dbl>, coupon_match_disc <dbl>, week <int>,
+    ## #   transaction_timestamp <dttm>, manufacturer_id <chr>, department <chr>,
+    ## #   brand <fct>, product_category <chr>, product_type <chr>,
+    ## #   package_size <chr>, age <ord>, income <ord>, home_ownership <ord>,
+    ## #   marital_status <ord>, household_size <ord>, household_comp <ord>,
+    ## #   kids_count <ord>, regular_price <dbl>, loyalty_price <dbl>,
+    ## #   coupon_price <dbl>, purchase_price <dbl>
 
 ``` r
 inner_join(my_transaction_data, demographics) %>% 
@@ -170,4 +205,4 @@ inner_join(my_transaction_data, demographics) %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](03-exploratory-data-analysis-solutions_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](03-exploratory-data-analysis-solutions_files/figure-markdown_github/unnamed-chunk-10-1.png)
