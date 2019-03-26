@@ -4,7 +4,7 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, include = TRUE, warning = FALSE, message = FALSE)
 ```
 
 The following questions are based on concepts covered in [Chapter 12][chapter
@@ -28,7 +28,7 @@ mailer redeemed at least one coupon?
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
   coupon_redemptions %>% count(household_id, name = "n_redemptions"), 
-  by = 'household_id'
+  by = "household_id"
 ) %>% 
   summarize(redemption_rate = mean(!is.na(n_redemptions)))
 
@@ -44,7 +44,7 @@ left_join(
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
   coupon_redemptions %>% count(household_id, name = "n_redemptions"), 
-  by = 'household_id'
+  by = "household_id"
 ) %>% 
   summarize(redemption_rate = sum(is.na(n_redemptions)))
 
