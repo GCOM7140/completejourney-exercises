@@ -1,0 +1,56 @@
+library(tidyverse)
+library(completejourney)
+view(transactions)
+#Question 1: Change the discount variables (i.e., retail_disc, coupon_disc, coupon_match_disc) from negative to positive.
+
+transactions <- mutate(transactions, retail_disc = abs(retail_disc), coupon_disc = abs(coupon_disc), coupon_match_disc = abs(coupon_match_disc))
+
+#Question 2: Create three new variables named regular_price, loyalty_price, and coupon_price according to the following logic: 
+transactions <- mutate (transactions, regular_price = (sales_value + retail_disc + coupon_match_disc) / quantity, loyalty_price = (sales_value + coupon_match_disc) / quantity, coupon_price  = (sales_value - coupon_disc) / quantity)
+
+
+#Question 3: The transactions dataset includes 68,509 unique product IDs. How many of these products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty price and coupon price?
+
+#counting the number of products with a regular price of one dollar or less
+#Answer: 8698
+transactions %>%
+  filter(regular_price <=1)%>%
+  select(product_id)%>%
+  n_distinct()
+  
+#counting the number of products with a loyalty price of one dollar or less
+#Answer: 14043
+transactions %>%
+  filter(loyalty_price <=1)%>%
+  select(product_id)%>%
+  n_distinct()
+
+#counting the number of products with a coupon price of one dollar or less
+#Answer: 15676
+transactions %>%
+  filter(coupon_price <=1)%>%
+  select(product_id)%>%
+  n_distinct()
+
+
+#Question 4: What proportion of baskets are over $10 in sales value?
+  
+transactions %>%
+  group_by (basket_id)%>%
+  summarize(basket_value = sum(sales_value))%>%
+  ungroup()%>%
+  summarize(basket_over_10_proportion = mean (basket_value > 10))
+ 
+#Question 5: Which store with over $10K in total sales_value discounts its products the most for loyal customers?
+transactions %>%
+  filter(is.finite(regular_price), #filtering out prices that R cannot work with such as missing values and infinite numbers.
+         is.finite(loyalty_price), 
+         regular_price > 0) %>%
+  mutate(pct_loyalty_disc = 1 - (loyalty_price / regular_price))%>% #create the variable based on formula given to calculate loyalty discount at line level.
+  group_by(store_id)%>% #group line value by store
+  summarize(sales_value = sum(sales_value), 
+            avg_loyalty_disc = mean(pct_loyalty_disc))%>% #calculate store-level sales and average store-level dscount
+  filter(sales_value > 10000)%>% #now filter for total sales at store
+  arrange (desc(avg_loyalty_disc)) #arrange the order values being displayed. 
+
+#General idea: filtering out noises in data set --> calculate at line-level --> group at store level --> calcualte store averages and sums --> filter at store-level and arrange. 
