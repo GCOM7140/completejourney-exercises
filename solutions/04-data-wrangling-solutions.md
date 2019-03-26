@@ -17,7 +17,7 @@ library(lubridate) # see chapter 16 of r4ds
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
   coupon_redemptions %>% count(household_id, name = "n_redemptions"), 
-  by = 'household_id'
+  by = "household_id"
 ) %>% 
   summarize(redemption_rate = mean(!is.na(n_redemptions)))
 ```
@@ -40,7 +40,7 @@ left_join(
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
   coupon_redemptions %>% count(household_id, name = "n_redemptions"), 
-  by = 'household_id'
+  by = "household_id"
 ) %>% 
   summarize(redemption_rate = sum(is.na(n_redemptions)))
 ```
@@ -60,10 +60,9 @@ left_join(
 
 ``` r
 left_join(
-  coupons            %>% count(coupon_upc, name = "n_products", sort = TRUE),
-  coupon_redemptions %>% count(coupon_upc, name = "n_redemptions"), 
-  by = "coupon_upc"
-) %>% 
+      coupons            %>% count(coupon_upc, name = "n_products", sort = TRUE),
+      coupon_redemptions %>% count(coupon_upc, name = "n_redemptions"), 
+      by = "coupon_upc") %>% 
   summarize(redemption_rate = sum(!is.na(n_redemptions)))
 ```
 
