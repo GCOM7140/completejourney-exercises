@@ -1,123 +1,130 @@
 Exploratory Data Analysis (EDA) Solutions
 ================
 
-The following questions are based on concepts covered in [Chapter 7](http://r4ds.had.co.nz/exploratory-data-analysis.html) of R4DS, and answers to them lie in the `transactions` and `products` datasets of the completejourney package. Load the tidyverse, completejourney, and lubridate packages to start working on them.
+The following questions are based on concepts covered in
+[Chapter 7](http://r4ds.had.co.nz/exploratory-data-analysis.html) of
+R4DS, and answers to them lie in the `transactions`, `demographics`, and
+`products` datasets of the completejourney package. Load the tidyverse
+and completejourney packages to start working on them.
 
 ``` r
 library(tidyverse)
 library(completejourney)
 ```
 
-After running the following code, use `my_transaction_data` to work on the following exercises.
+With these packages loaded, begin by creating `transactions_prices`.
 
 ``` r
-left_join(transactions, products, by = "product_id") %>% 
-   left_join(demographics, by = "household_id") %>%
-   filter(quantity != 0) %>%
-   mutate(
-     regular_price  = (sales_value + retail_disc + coupon_match_disc) /
-                       quantity,
-     loyalty_price  = (sales_value + coupon_match_disc) / 
-                       quantity,
-     coupon_price   = (sales_value - coupon_disc) / 
-                       quantity,
-     purchase_price = ifelse(coupon_disc > 0, coupon_price, 
-                             ifelse(retail_disc > 0, loyalty_price,
-                                                             regular_price
-       )
-     )
-   ) -> my_transaction_data
-```
-
-------------------------------------------------------------------------
-
-**Question 1**: How many unique households exist in `my_transaction_data`, and how many of these households have demographic data in `demographics`?
-
-1.  Use `distinct()` to create a tibble of unique `household_id` values.
-2.  Use `nrow()` to count these households.
-3.  Use `inner_join()` to match `my_transaction_data` with `demographics`.
-4.  Use `distinct()` and `nrow()` to count the rows that remain.
-
-``` r
-my_transaction_data %>% 
-  distinct(household_id) %>% 
-  nrow()
-```
-
-    ## [1] 2469
-
-``` r
-inner_join(my_transaction_data, demographics, by = "household_id") %>% 
-  distinct(household_id) %>% 
-  nrow()
-```
-
-    ## [1] 801
-
-``` r
-# There are 2,469 unique households in my_transaction_data, 801 of which have
-# data in demographics.
-```
-
-------------------------------------------------------------------------
-
-**Question 2**: Determine median weekly spend per individual using the following tibble (i.e., `exercise_2`).
-
-``` r
-inner_join(my_transaction_data, demographics) %>% 
-   mutate(
-     hh_size          = str_replace(household_size, "5\\+", "5") %>% 
-                         as.integer()
-   ) %>% 
-   group_by(household_id, week) %>% 
-   summarize(
-     total_spend      = sum(purchase_price, na.rm = TRUE),
-     hh_size          = max(hh_size,        na.rm = TRUE)
-   ) %>% 
-   ungroup() %>%
+transactions %>% 
+  filter(quantity != 0) %>%
   mutate(
-    wkly_spend_per_ind = total_spend / hh_size
-  ) -> exercise_2
+     price_regular  = (sales_value + retail_disc + coupon_match_disc) /
+                       quantity,
+     price_loyalty  = (sales_value + coupon_match_disc) / 
+                       quantity,
+     price_coupon   = (sales_value - coupon_disc) / 
+                       quantity,
+     price_purchase = case_when(
+                            coupon_disc > 0 ~ price_coupon, 
+                            retail_disc > 0 ~ price_loyalty,
+                            TRUE            ~ price_regular
+       )
+  ) -> 
+  transactions_prices
+```
+
+-----
+
+**Question 1**: Determine median weekly spend per individual (not
+household) using `price_purchase` in`transactions_prices` and
+`household_size` in `demographics`.
+
+Because `transactions_prices` does not contain household metadata, you
+need to create a new dataset with household information in it. In
+addition, because `household_size` is a factor variable, you need to
+convert it to an integer variable to calculate weekly spend per
+individual. Consider using the code below for the beginning of the pipe
+you build for this question.
+
+``` r
+transactions_prices %>%
+  inner_join(demographics, by = "household_id") %>% 
+  mutate(
+    household_size = str_replace(household_size, "5\\+", "5") %>% 
+                     as.integer()
+  )
 ```
 
 ``` r
-exercise_2 %>% 
+transactions_prices %>%
+  inner_join(demographics, by = "household_id") %>% 
+  mutate(
+    household_size     = str_replace(household_size, "5\\+", "5") %>% 
+                         as.integer()
+  ) %>% 
+  group_by(household_id, week) %>%
+  mutate(
+    spend_total        = sum(price_purchase, na.rm = TRUE),
+    spend_wkly_per_ind = spend_total / household_size
+  ) %>% 
+  ungroup() %>% 
   summarize(
-    med_wkly_spend_per_ind = median(wkly_spend_per_ind, na.rm = TRUE)
+    spend_wkly_per_ind_med = median(spend_wkly_per_ind, na.rm = TRUE)
   )
 ```
 
     ## # A tibble: 1 x 1
-    ##   med_wkly_spend_per_ind
+    ##   spend_wkly_per_ind_med
     ##                    <dbl>
-    ## 1                   23.8
+    ## 1                   44.2
 
 ``` r
-# Median weekly spending is $23.80.
+# Median weekly spend is $44.20.
 ```
 
-------------------------------------------------------------------------
+-----
 
-**Question 3**: Building on Question 2, plot median spend per individual for the five household sizes in `my_transaction_data`.
+**Question 2**: Building on Question 2, plot median spend per individual
+by household size.
 
 ``` r
-exercise_2 %>% 
-  group_by(hh_size) %>% 
-  summarize(
-    med_wkly_spend_per_ind = median(wkly_spend_per_ind, na.rm = TRUE)
+transactions_prices %>%
+  inner_join(demographics, by = "household_id") %>% 
+  mutate(
+    household_size     = str_replace(household_size, "5\\+", "5") %>% 
+                         as.integer()
   ) %>% 
-  ggplot(aes(x = hh_size, y = med_wkly_spend_per_ind)) +
+  group_by(household_id, week) %>%
+  mutate(
+    spend_total        = sum(price_purchase, na.rm = TRUE),
+    spend_wkly_per_ind = spend_total / household_size
+  ) %>% 
+  group_by(household_size) %>% 
+  summarize(
+    spend_wkly_per_ind_med = median(spend_wkly_per_ind, na.rm = TRUE)
+  ) %>% 
+  ggplot(aes(x = household_size, y = spend_wkly_per_ind_med)) +
   geom_col()
 ```
 
-![](03-exploratory-data-analysis-solutions_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](03-exploratory-data-analysis-solutions_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-------------------------------------------------------------------------
+-----
 
-**Question 4**: Are baskets with diapers in them more likely than average to have beer in them too? Legend has it that placing these two product categories closer together can increase beer sales [(Powers 2002)](https://www.theregister.co.uk/2006/08/15/beer_diapers/). Using the following starter code, calculate [lift](https://en.wikipedia.org/wiki/Lift_(data_mining)) for the "association rule" that diapers in a basket (i.e., `product_type == "BABY DIAPERS"`) imply beer is in the basket (i.e., `product_type == "BEERALEMALT LIQUORS"`). Is the association between these products practically significant in `my_transaction_data`?
+**Question 3**: Are baskets with diapers in them more likely than
+average to have beer in them, too? Legend has it that placing these two
+product categories closer together can increase beer sales
+([Powers 2002](https://www.theregister.co.uk/2006/08/15/beer_diapers/)).
+Using the following starter code, calculate
+[lift](https://en.wikipedia.org/wiki/Lift_\(data_mining\)) for the
+“association rule” that diapers in a basket (i.e., `product_type ==
+"BABY DIAPERS"`) imply that beer is in the basket (i.e., `product_type
+== "BEERALEMALT LIQUORS"`). Does the association between these products
+offer support for the legend?
 
 ``` r
-inner_join(my_transaction_data, products) %>% 
+transactions_prices %>% 
+  inner_join(products, by = "product_id") %>% 
   mutate(
     diapers = product_type == "BABY DIAPERS", 
     beer    = product_type == "BEERALEMALT LIQUORS"
@@ -125,21 +132,21 @@ inner_join(my_transaction_data, products) %>%
 ```
 
 ``` r
-inner_join(my_transaction_data, products) %>% 
-   mutate(
-      diapers = product_type == "BABY DIAPERS", 
-      beer    = product_type == "BEERALEMALT LIQUORS"
-   ) %>%
-   group_by(basket_id) %>%
-   summarize(
-      basket_has_diapers = max(diapers), 
-      basket_has_beer    = max(beer)
-   ) %>% 
-   filter(!is.na(basket_has_diapers)) %>% # not sure why this is necessary
-   summarize(
-      prop_both   = sum(basket_has_diapers * basket_has_beer == 1) / 
-         sum(basket_has_diapers == 1),
-      prob_beer   = mean(basket_has_beer),
+transactions_prices %>% 
+  inner_join(products, by = "product_id") %>% 
+  mutate(
+    diapers = product_type == "BABY DIAPERS", 
+    beer    = product_type == "BEERALEMALT LIQUORS"
+  ) %>% 
+  group_by(basket_id) %>%
+  summarize(
+    basket_has_diapers = max(diapers), 
+    basket_has_beer    = max(beer)
+  ) %>% 
+  summarize(
+      prop_both   = sum(basket_has_diapers * basket_has_beer == 1, na.rm = TRUE) 
+                    / sum(basket_has_diapers == 1, na.rm = TRUE),
+      prob_beer   = mean(basket_has_beer, na.rm = TRUE),
       diaper_lift = prop_both / prob_beer
    )
 ```
@@ -149,60 +156,39 @@ inner_join(my_transaction_data, products) %>%
     ##       <dbl>     <dbl>       <dbl>
     ## 1    0.0552    0.0554       0.996
 
-------------------------------------------------------------------------
-
-**Question 5**: Using a stacked bar chart that's partitioned by income level (i.e., `income`), visualize the total amount of money customers spent on national-brand products versus private-label products. Start with the following code:
-
 ``` r
-inner_join(my_transaction_data, demographics) %>% 
-  mutate(
-    income = factor(income, 
-                         levels = c("Under 15K",   "15-24K",   "25-34K", 
-                                       "35-49K",   "50-74K",   "75-99K", 
-                                     "100-124K", "125-149K", "150-174K", 
-                                     "175-199K", "200-249K",    "250K+"),
-                         ordered = TRUE)
-  )
+# the complete journey data do not bear out the parable of beer and diapers, as
+# the lift of 1 suggests that the probability of a customer having diapers in a
+# basket and that of them having beer in a basket are independent of each other.
 ```
 
-    ## # A tibble: 823,670 x 28
-    ##    household_id store_id basket_id product_id quantity sales_value
-    ##    <chr>        <chr>    <chr>     <chr>         <dbl>       <dbl>
-    ##  1 900          330      31198570~ 1095275           1        0.5 
-    ##  2 900          330      31198570~ 9878513           1        0.99
-    ##  3 1228         406      31198655~ 1041453           1        1.43
-    ##  4 906          319      31198705~ 1020156           1        1.5 
-    ##  5 906          319      31198705~ 1053875           2        2.78
-    ##  6 906          319      31198705~ 1060312           1        5.49
-    ##  7 906          319      31198705~ 1075313           1        1.5 
-    ##  8 1419         32004    31198515~ 1037894           1        1   
-    ##  9 1419         32004    31198515~ 1069175           1        1.29
-    ## 10 1873         361      31198640~ 834484            1        0.66
-    ## # ... with 823,660 more rows, and 22 more variables: retail_disc <dbl>,
-    ## #   coupon_disc <dbl>, coupon_match_disc <dbl>, week <int>,
-    ## #   transaction_timestamp <dttm>, manufacturer_id <chr>, department <chr>,
-    ## #   brand <fct>, product_category <chr>, product_type <chr>,
-    ## #   package_size <chr>, age <ord>, income <ord>, home_ownership <ord>,
-    ## #   marital_status <ord>, household_size <ord>, household_comp <ord>,
-    ## #   kids_count <ord>, regular_price <dbl>, loyalty_price <dbl>,
-    ## #   coupon_price <dbl>, purchase_price <dbl>
+-----
+
+**Question 4**: Using a stacked bar chart that is partitioned by income
+level (i.e., `income`), visualize the total amount of money that
+households in the Complete Journey Study spent on national-brand
+products versus private-label products (i.e., `brand`).
+
+Because `transactions_prices` does not contain household or product
+metadata, you need to create a new dataset with this information in it.
+Consider using the code below for the beginning of the pipe you build
+for this question.
 
 ``` r
-inner_join(my_transaction_data, demographics) %>% 
-  mutate(
-    income = factor(income, 
-                         levels = c("Under 15K",   "15-24K",   "25-34K", 
-                                       "35-49K",   "50-74K",   "75-99K", 
-                                     "100-124K", "125-149K", "150-174K", 
-                                     "175-199K", "200-249K",    "250K+"),
-                         ordered = TRUE)
-  ) %>%
+transactions_prices %>% 
+  left_join(demographics, by = "household_id") %>% 
+  left_join(products, by = "product_id")
+```
+
+``` r
+transactions_prices %>% 
+  left_join(demographics, by = "household_id") %>% 
+  left_join(products, by = "product_id") %>% 
   group_by(income, brand) %>%
-  summarize(total_spend = sum(purchase_price)) %>% 
-  ggplot() +
-  geom_col(aes(x = income, y = total_spend, fill = brand), 
-           position = "fill") + 
+  summarize(spend_total = sum(price_purchase)) %>% 
+  ggplot(mapping = aes(x = income, y = spend_total, fill = brand)) +
+  geom_col(position = "fill") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](03-exploratory-data-analysis-solutions_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](03-exploratory-data-analysis-solutions_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
