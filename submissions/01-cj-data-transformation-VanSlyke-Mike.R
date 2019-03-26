@@ -74,3 +74,5 @@ transactions %>%
   ) %>%
   filter(total_sales_value > 10000) %>%
   arrange(desc(avg_pct_loyalty_disc))
+
+#test
