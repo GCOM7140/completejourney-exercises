@@ -1,90 +1,101 @@
 Exploratory Data Analysis (EDA) Exercises
 ================
 
-The following seven exercises are based on concepts covered in [Chapter 7 of R4DS](http://r4ds.had.co.nz/exploratory-data-analysis.html). They can be answered using datasets from the `completejourney` package. Start by loading the `tidyverse` and `completejourney` packages.
-
-After running the following code, use `my_transaction_data` to work on the following exercises.
+The following questions are based on concepts covered in
+[Chapter 7](http://r4ds.had.co.nz/exploratory-data-analysis.html) of
+R4DS, and answers to them lie in the `transactions`, `demographics`, and
+`products` datasets of the completejourney package. Load the tidyverse
+and completejourney packages to start working on them.
 
 ``` r
-left_join(transaction_data, product) %>% 
-   left_join(hh_demographic) %>% 
-   filter(
-     quantity != 0
-   ) %>% 
-   mutate(
-     regular_price  = (sales_value + retail_disc + coupon_match_disc) /
-                       quantity,
-     loyalty_price  = (sales_value + coupon_match_disc) / 
-                       quantity,
-     coupon_price   = (sales_value - coupon_disc) / 
-                       quantity,
-     purchase_price = ifelse(coupon_disc > 0, coupon_price, 
-                             ifelse(retail_disc > 0, loyalty_price,
-                                                            regular_price))
-  ) -> my_transaction_data
+library(tidyverse)
+library(completejourney)
 ```
 
-------------------------------------------------------------------------
-
-Exercise 1
-----------
-
-How many unique households exist in `my_transaction_data`, and how many of these households in `my_transaction_data` have demographic data in `hh_demographic`?
-
-1.  Use `distinct()` to create a tibble of unique `household_key` values.
-2.  Use `nrow()` to count these households.
-3.  Use `inner_join()` to match `my_transaction_data` with `hh_demographic`.
-4.  Use `distinct()` and `nrow()` to count the rows that remain.
-
-------------------------------------------------------------------------
-
-Exercise 2
-----------
-
-Determine median weekly spend per individual using the following tibble (i.e., `exercise_2`).
+With these packages loaded, begin by creating `transactions_prices`.
 
 ``` r
-inner_join(my_transaction_data, hh_demographic) %>% 
-   mutate(
-     hh_size          = str_replace(household_size_desc, '5\\+', '5') %>% 
-                         as.integer()
-   ) %>% 
-   group_by(household_key, week_no) %>% 
-   summarize(
-     total_spend      = sum(purchase_price, na.rm = TRUE),
-     hh_size          = max(hh_size,        na.rm = TRUE)
-   ) %>% 
-   ungroup() %>%
+transactions %>% 
+  filter(quantity != 0) %>%
   mutate(
-    wkly_spend_per_ind = total_spend / hh_size
-  ) -> exercise_2
+     price_regular  = (sales_value + retail_disc + coupon_match_disc) /
+                       quantity,
+     price_loyalty  = (sales_value + coupon_match_disc) / 
+                       quantity,
+     price_coupon   = (sales_value - coupon_disc) / 
+                       quantity,
+     price_purchase = case_when(
+                            coupon_disc > 0 ~ price_coupon, 
+                            retail_disc > 0 ~ price_loyalty,
+                            TRUE            ~ price_regular
+       )
+  ) -> 
+  transactions_prices
 ```
 
-------------------------------------------------------------------------
+-----
 
-Exercise 3
-----------
+**Question 1**: Determine median weekly spend per individual (not
+household) using `price_purchase` in`transactions_prices` and
+`household_size` in `demographics`.
 
-Building on Exercise 2, plot median spend per individual for the five household sizes in `my_transaction_data`.
-
-------------------------------------------------------------------------
-
-Exercise 4
-----------
-
-Are baskets with diapers in them more likely than average to have beer in them too? Legend has it that placing these two product categories closer together can increase beer sales [(Powers 2002)](https://www.theregister.co.uk/2006/08/15/beer_diapers/). Using the following starter code, calculate [lift](https://en.wikipedia.org/wiki/Lift_(data_mining)) for the "association rule" that diapers in a basket (i.e., `sub_commodity_desc == 'BABY DIAPERS'`) imply beer is in the basket (i.e., `sub_commodity_desc == 'BEERALEMALT LIQUORS'`). Is the association between these products practically significant in `my_transaction_data`?
+Because `transactions_prices` does not contain household metadata, you
+need to create a new dataset with household information in it. In
+addition, because `household_size` is a factor variable, you need to
+convert it to an integer variable to calculate weekly spend per
+individual. Consider using the code below for the beginning of the pipe
+you build for this question.
 
 ``` r
-inner_join(my_transaction_data, product) %>% 
+transactions_prices %>%
+  inner_join(demographics, by = "household_id") %>% 
   mutate(
-    diapers = sub_commodity_desc == 'BABY DIAPERS', 
-    beer    = sub_commodity_desc == 'BEERALEMALT LIQUORS'
+    household_size = str_replace(household_size, "5\\+", "5") %>% 
+                     as.integer()
   )
 ```
 
-------------------------------------------------------------------------
+-----
 
-Exercise 5
-----------
+**Question 2**: Building on Question 2, plot median spend per individual
+by household size.
 
-Using a stacked bar chart that's partitioned by income level (i.e., `income_desc`), visualize the total amount of money customers spent on national-brand products versus private-label products.
+-----
+
+**Question 3**: Are baskets with diapers in them more likely than
+average to have beer in them, too? Legend has it that placing these two
+product categories closer together can increase beer sales
+([Powers 2002](https://www.theregister.co.uk/2006/08/15/beer_diapers/)).
+Using the following starter code, calculate
+[lift](https://en.wikipedia.org/wiki/Lift_\(data_mining\)) for the
+“association rule” that diapers in a basket (i.e., `product_type ==
+"BABY DIAPERS"`) imply that beer is in the basket (i.e., `product_type
+== "BEERALEMALT LIQUORS"`). Does the association between these products
+offer support for the legend?
+
+``` r
+transactions_prices %>% 
+  inner_join(products, by = "product_id") %>% 
+  mutate(
+    diapers = product_type == "BABY DIAPERS", 
+    beer    = product_type == "BEERALEMALT LIQUORS"
+  )
+```
+
+-----
+
+**Question 4**: Using a stacked bar chart that is partitioned by income
+level (i.e., `income`), visualize the total amount of money that
+households in the Complete Journey Study spent on national-brand
+products versus private-label products (i.e., `brand`).
+
+Because `transactions_prices` does not contain household or product
+metadata, you need to create a new dataset with this information in it.
+Consider using the code below for the beginning of the pipe you build
+for this question.
+
+``` r
+transactions_prices %>% 
+  left_join(demographics, by = "household_id") %>% 
+  left_join(products, by = "product_id")
+```
