@@ -73,4 +73,4 @@ transactions_products %>%
   coord_flip()
 
 # The most popular package size for PB&J products is 18 oz. The runner-up is 32
-# oz.
+# oz. 
