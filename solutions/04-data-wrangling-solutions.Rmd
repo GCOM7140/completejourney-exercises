@@ -3,8 +3,13 @@ title: "Data Wrangling Solutions"
 output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, include = TRUE, warning = FALSE, message = FALSE)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  include = TRUE,
+  eval    = TRUE,
+  warning = FALSE, 
+  message = FALSE
+)
 ```
 
 The following questions are based on concepts covered in [Chapter 12][chapter
@@ -87,7 +92,8 @@ Here are some suggestions:
  8. Arrange the data in descending order according to `spend_growth_pct`.  
 
 ```{r}
-left_join(transactions, products, by = "product_id") %>%
+transactions %>% 
+  left_join(products, by = "product_id") %>%
   mutate(month = month(transaction_timestamp, label = TRUE)) %>%
   group_by(product_category, month) %>%
   summarize(spend_tot = sum(sales_value, na.rm = TRUE)) %>%
