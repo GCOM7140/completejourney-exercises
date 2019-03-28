@@ -1,5 +1,13 @@
+#-------------------------------------#
+# Theme: EDA CJ   #
+# Author: Roy Luo #
+#------------------------------------#
+
+
 library(tidyverse)
 library(completejourney)
+
+# With these packages loaded, begin by creating transactions_prices
 
 transactions %>% 
   filter(quantity != 0) %>%
@@ -18,14 +26,18 @@ transactions %>%
   ) -> 
   transactions_prices
 
+# Question 1: Determine median weekly spend per individual (not household) using price_purchase intransactions_prices and household_size in demographics.
 
-#' Q1 - Determine median weekly spend per individual (not household) using
-#' price_purchase intransactions_prices and household_size in demographics.
- 
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
   mutate(
     household_size = str_replace(household_size, "5\\+", "5") %>% 
+      as.integer()
+  )
+transactions_prices %>%
+  inner_join(demographics, by = "household_id") %>% 
+  mutate(
+    household_size     = str_replace(household_size, "5\\+", "5") %>% 
       as.integer()
   ) %>% 
   group_by(household_id, week) %>%
@@ -37,10 +49,9 @@ transactions_prices %>%
   summarize(
     spend_wkly_per_ind_med = median(spend_wkly_per_ind, na.rm = TRUE)
   )
+# Answer: Median of weekly spend is $44.20
 
-
-#' Q2 - Building on Question 2, plot median spend per individual by household
-#' size.
+# Question 2: Building on Question 1, plot median spend per individual by household size
 
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
@@ -60,15 +71,14 @@ transactions_prices %>%
   ggplot(aes(x = household_size, y = spend_wkly_per_ind_med)) +
   geom_col()
 
+# Question 3: Are baskets with diapers in them more likely than average to have beer in them, too? Legend has it that placing these two product categories closer together can increase beer sales (Powers 2002). Using the following starter code, calculate lift for the “association rule” that diapers in a basket (i.e., product_type == "BABY DIAPERS") imply that beer is in the basket (i.e., product_type == "BEERALEMALT LIQUORS"). Does the association between these products offer support for the legend
 
-#' Q3 - Are baskets with diapers in them more likely than average to have beer
-#' in them, too? Legend has it that placing these two product categories closer
-#' together can increase beer sales (Powers 2002). Using the following starter
-#' code, calculate lift for the “association rule” that diapers in a basket
-#' (i.e., product_type == "BABY DIAPERS") imply that beer is in the basket
-#' (i.e., product_type == "BEERALEMALT LIQUORS"). Does the association between
-#' these products offer support for the legend?
- 
+transactions_prices %>% 
+  inner_join(products, by = "product_id") %>% 
+  mutate(
+    diapers = product_type == "BABY DIAPERS", 
+    beer    = product_type == "BEERALEMALT LIQUORS"
+  )
 transactions_prices %>% 
   inner_join(products, by = "product_id") %>% 
   mutate(
@@ -86,13 +96,15 @@ transactions_prices %>%
     prob_beer   = mean(basket_has_beer, na.rm = TRUE),
     diaper_lift = prop_both / prob_beer
   )
+# The probability of a customer having both diapers and beer in a basket are pretty independent.
 
+# Question 4: Using a stacked bar chart that is partitioned by income level (i.e., income), visualize the total amount of money that households in the Complete Journey Study spent on national-brand products versus private-label products (i.e., brand)
 
-#' Q4 - Using a stacked bar chart that is partitioned by income level (i.e.,
-#' income), visualize the total amount of money that households in the Complete
-#' Journey Study spent on national-brand products versus private-label products
-#' (i.e., brand).
- 
+# create a new table
+transactions_prices %>% 
+  left_join(demographics, by = "household_id") %>% 
+  left_join(products, by = "product_id")
+
 transactions_prices %>% 
   left_join(demographics, by = "household_id") %>% 
   left_join(products, by = "product_id") %>% 
@@ -101,3 +113,5 @@ transactions_prices %>%
   ggplot(mapping = aes(x = income, y = spend_total, fill = brand)) +
   geom_col(position = "fill") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
