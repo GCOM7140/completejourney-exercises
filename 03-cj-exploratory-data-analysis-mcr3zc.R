@@ -1,5 +1,11 @@
+#Homework Set for March 28 
+
+#Libraries 
+
 library(tidyverse)
 library(completejourney)
+
+#Create Transaction Prices 
 
 transactions %>% 
   filter(quantity != 0) %>%
@@ -18,14 +24,18 @@ transactions %>%
   ) -> 
   transactions_prices
 
+#Question One - Determine median weekly spend per individual (not household) using price_purchase in transaction_prices and household_size in demographics 
 
-#' Q1 - Determine median weekly spend per individual (not household) using
-#' price_purchase intransactions_prices and household_size in demographics.
- 
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
   mutate(
     household_size = str_replace(household_size, "5\\+", "5") %>% 
+      as.integer()
+  )
+transactions_prices %>%
+  inner_join(demographics, by = "household_id") %>% 
+  mutate(
+    household_size     = str_replace(household_size, "5\\+", "5") %>% 
       as.integer()
   ) %>% 
   group_by(household_id, week) %>%
@@ -36,11 +46,17 @@ transactions_prices %>%
   ungroup() %>% 
   summarize(
     spend_wkly_per_ind_med = median(spend_wkly_per_ind, na.rm = TRUE)
+    
   )
 
+## # A tibble: 1 x 1
+##   spend_wkly_per_ind_med
+##                    <dbl>
+## 1                   44.2
 
-#' Q2 - Building on Question 2, plot median spend per individual by household
-#' size.
+#median weekly spend is $44.20 
+
+#Question Two - plot median spend per individual by household size 
 
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
@@ -60,15 +76,10 @@ transactions_prices %>%
   ggplot(aes(x = household_size, y = spend_wkly_per_ind_med)) +
   geom_col()
 
+#These graphs show to us that the median weekly spend per individual goes down as household size increases - for example the median spend for the 1 person household is $80, then for 2 it's $40, so we can see that having more people in your house means you're going to likely spend lesson an individual basis. 
 
-#' Q3 - Are baskets with diapers in them more likely than average to have beer
-#' in them, too? Legend has it that placing these two product categories closer
-#' together can increase beer sales (Powers 2002). Using the following starter
-#' code, calculate lift for the “association rule” that diapers in a basket
-#' (i.e., product_type == "BABY DIAPERS") imply that beer is in the basket
-#' (i.e., product_type == "BEERALEMALT LIQUORS"). Does the association between
-#' these products offer support for the legend?
- 
+#Question Three - Are baskets with diapers in them more likely than average to have beer in them, too? 
+
 transactions_prices %>% 
   inner_join(products, by = "product_id") %>% 
   mutate(
@@ -85,14 +96,21 @@ transactions_prices %>%
     / sum(basket_has_diapers == 1, na.rm = TRUE),
     prob_beer   = mean(basket_has_beer, na.rm = TRUE),
     diaper_lift = prop_both / prob_beer
-  )
+  ) 
+    ## # A tibble: 1 x 3
+    ##   prop_both prob_beer diaper_lift
+    ##       <dbl>     <dbl>       <dbl>
+    ## 1    0.0552    0.0554       0.996
+
+#We do not see that there is a notably higher probability of beer and diapers being purchased together. 
 
 
-#' Q4 - Using a stacked bar chart that is partitioned by income level (i.e.,
-#' income), visualize the total amount of money that households in the Complete
-#' Journey Study spent on national-brand products versus private-label products
-#' (i.e., brand).
- 
+#Question Four - Using a stacked bar chart that is partitioned by income level (i.e., income), visualize the total amount of money that households in the Complete Journey Study spent on national-brand products versus private-label products (i.e., brand).
+
+transactions_prices %>% 
+  left_join(demographics, by = "household_id") %>% 
+  left_join(products, by = "product_id")
+
 transactions_prices %>% 
   left_join(demographics, by = "household_id") %>% 
   left_join(products, by = "product_id") %>% 
@@ -101,3 +119,5 @@ transactions_prices %>%
   ggplot(mapping = aes(x = income, y = spend_total, fill = brand)) +
   geom_col(position = "fill") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#see the graph to show that households spent more on nationl brands across income brackets as compared to private brands. 
