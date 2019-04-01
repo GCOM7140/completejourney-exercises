@@ -45,7 +45,7 @@ We designed this question to strengthen your ability to use dplyr verbs in combi
 
 **Question 4**: Building on Question 3, suppose you want to understand whether the retailer's customers' preference for national brands (compared to private-label brands) is stronger in the soft drink category than it is in the cheese category. Examine this supposition by using a stacked bar chart to compare the split between national and private-label brands for soft drinks and cheeses.
 
-**Hint**: Follow these three steps to create your plot:
+Follow these three steps to create your plot:
 
 -   Filter `transactions_products` to include only transactions with `product_category` equal to "SOFT DRINKS" or "CHEESE"
 -   Calculate total sales value by `product_category` and `brand`
