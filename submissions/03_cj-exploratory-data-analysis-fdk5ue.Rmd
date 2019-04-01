@@ -1,12 +1,13 @@
 ---
-title: "Exploratory Data Analysis (EDA) Exercises"
+#FilipKawka
+title: "Exploratory Data Analysis (EDA) Solutions"
 output: github_document
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  include = FALSE,
-  eval    = FALSE,
+  include = TRUE,
+  eval    = TRUE,
   warning = FALSE, 
   message = FALSE
 )
@@ -86,11 +87,8 @@ transactions_prices %>%
 
 ---
 
-**Question 2**: As Hadley and Garrett outline in [Chapter 7], EDA is an
-iterative cycle. Suppose that based on what you learned in Question 1, you want
-to know what the median spend per individual is for different household sizes.
-How could you plot median spend per individual by household size to answer this
-new question with a visualization?
+**Question 2**: Building on Question 2, plot median spend per individual by
+household size.
 
 ```{r}
 transactions_prices %>%
@@ -183,6 +181,3 @@ transactions_prices %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-[chapter 7]: http://r4ds.had.co.nz/exploratory-data-analysis.html
-[Powers 2002]: https://www.theregister.co.uk/2006/08/15/beer_diapers/
-[Wikipedia, lift]: https://en.wikipedia.org/wiki/Lift_(data_mining)
