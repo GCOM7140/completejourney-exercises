@@ -20,7 +20,7 @@ ggplot(data = transactions) +
   geom_histogram(mapping = aes(x = quantity))
 ```
 
-![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 ``` r
 # The unusual aspect of the histogram is its extremely long tail. The distance
@@ -31,7 +31,7 @@ ggplot(data = transactions %>% filter(quantity <= 10)) +
   geom_histogram(mapping = aes(x = quantity))
 ```
 
-![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-1-2.png)
+![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-2-2.png)
 
 ------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ transactions %>%
   geom_line(mapping = aes(x = date, y = total_sales_value))
 ```
 
-![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
 # The most extreme days of the year were November 23 and December 23,
@@ -85,13 +85,13 @@ transactions_products %>%
   geom_bar(stat = "identity")
 ```
 
-![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ------------------------------------------------------------------------
 
 **Question 4**: Building on Question 3, suppose you want to understand whether the retailer's customers' preference for national brands (compared to private-label brands) is stronger in the soft drink category than it is in the cheese category. Examine this supposition by using a stacked bar chart to compare the split between national and private-label brands for soft drinks and cheeses.
 
-**Hint**: Follow these three steps to create your plot:
+Follow these three steps to create your plot:
 
 -   Filter `transactions_products` to include only transactions with `product_category` equal to "SOFT DRINKS" or "CHEESE"
 -   Calculate total sales value by `product_category` and `brand`
@@ -108,7 +108,7 @@ transactions_products %>%
   geom_col(position = "fill")
 ```
 
-![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ------------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ transactions_products %>%
   coord_flip()
 ```
 
-![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](02-data-visualization-solutions_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 # The most popular package size for PB&J products is 18 oz. The runner-up is 32

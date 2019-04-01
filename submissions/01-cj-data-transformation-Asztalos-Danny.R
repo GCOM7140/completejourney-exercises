@@ -1,7 +1,7 @@
-#install.packages(c("tidyverse", "devtools"))
+install.packages(c("tidyverse", "devtools"))
 
-#devtools::install_github("bradleyboehmke/completejourney")
-
+devtools::install_github("bradleyboehmke/completejourney")
+ 
 
 library(tidyverse)
 library(completejourney)
@@ -52,29 +52,3 @@ transactions %>%
   select(product_id) %>% 
   n_distinct()
 
-#Question 4: What proportion of baskets are over $10 in sales value?
-
-transactions %>%
-  group_by(basket_id) %>%
-  summarize(basket_value = sum(sales_value)) %>%
-  ungroup() %>%
-  summarize(proportion_over_10 = round(mean(basket_value > 10) * 100, 0))
-
-#Question 5: Which store with over $10K in total sales_value discounts its products the most for loyal customers?
-
-transactions %>%
-  filter(
-    is.finite(regular_price), 
-    is.finite(loyalty_price), 
-    regular_price > 0
-  ) %>%
-  mutate(
-    pct_loyalty_disc     = 1 - (loyalty_price / regular_price)
-  ) %>%
-  group_by(store_id) %>%
-  summarize(
-    total_sales_value    = sum(sales_value), 
-    avg_pct_loyalty_disc = mean(pct_loyalty_disc)
-  ) %>%
-  filter(total_sales_value > 10000) %>%
-  arrange(desc(avg_pct_loyalty_disc))

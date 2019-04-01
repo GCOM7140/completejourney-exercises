@@ -4,7 +4,12 @@ output: github_document
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  include = TRUE,
+  eval    = TRUE,
+  warning = FALSE, 
+  message = FALSE
+)
 ```
 
 The following questions are based on concepts covered in [Chapter 3][chapter 3]
@@ -12,7 +17,7 @@ of R4DS, and answers to them lie in the `transactions` and `products` datasets
 of the completejourney package. Load the tidyverse, completejourney, and
 lubridate packages to start working on them.
 
-```{r load-packages, warning = FALSE, message = FALSE}
+```{r}
 library(tidyverse)
 library(completejourney)
 library(lubridate) # see chapter 16 of r4ds
@@ -26,7 +31,7 @@ you find unusual about this visualization?
 We designed this question to strengthen your ability to visualize the
 distribution of a continuous variable with the `geom_histogram()` function.
 
-```{r include = TRUE, eval = TRUE, message = FALSE}
+```{r}
 ggplot(data = transactions) + 
   geom_histogram(mapping = aes(x = quantity))
 
@@ -51,7 +56,7 @@ You can get dates from the `transaction_timestamp` variable in the
 you are interested, you can see some examples of other accessor functions in the
 lubridate package [here][16.3].
 
-```{r include = TRUE, eval = TRUE}
+```{r}
 transactions %>% 
   mutate(date = date(transaction_timestamp)) %>% 
   group_by(date) %>% 
@@ -75,7 +80,7 @@ Because `transactions` does not contain product metadata, you will need to
 create a new dataset with product information in it. Consider running the code
 below for this purpose and using `transactions_products` for your answer.
 
-```{r eval = TRUE}
+```{r}
 transactions_products <- left_join(
   transactions, 
   products, 
@@ -88,7 +93,7 @@ transactions_products <- left_join(
 We designed this question to strengthen your ability to use dplyr verbs in
 combination with `geom_bar()` and its `stat` argument (see [here][3.7]).
 
-```{r include = TRUE, eval = TRUE}
+```{r}
 transactions_products %>%
   group_by(brand) %>%
   summarize(total_sales_value = sum(sales_value)) %>%
@@ -105,14 +110,14 @@ cheese category. Examine this supposition by using a stacked bar chart to
 compare the split between national and private-label brands for soft drinks and
 cheeses.
 
-**Hint**: Follow these three steps to create your plot: 
+Follow these three steps to create your plot: 
 
  - Filter `transactions_products` to include only transactions with
  `product_category` equal to "SOFT DRINKS" or "CHEESE"
  - Calculate total sales value by `product_category` and `brand`
  - Create the bars using [`geom_col()`][arnold 3.7.2] with `position = 'fill'`
 
-```{r include = TRUE, eval = TRUE}
+```{r}
 transactions_products %>%
   filter(product_category %in% c("SOFT DRINKS", "CHEESE")) %>%
   group_by(product_category, brand) %>%
@@ -130,7 +135,7 @@ better, jelly, and jams product category (i.e., `"PNT BTR/JELLY/JAMS"`). Then,
 create a bar chart to visualize the distribution of the retailer's PB\&J
 transactions by package size. Which two package sizes are the most popular?
 
-```{r include = TRUE, eval = TRUE}
+```{r}
 transactions_products %>% 
   filter(product_category == "PNT BTR/JELLY/JAMS") %>% 
   group_by(package_size) %>% 
