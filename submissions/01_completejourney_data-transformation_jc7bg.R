@@ -17,14 +17,14 @@ transactions <- transactions %>%
 #coupon_price  = (sales_value - coupon_disc) / quantity
 
 transactions <- transactions %>% 
-    mutate(
-      regular_price = (sales_value + retail_disc + coupon_match_disc) / 
-        quantity,
-      loyalty_price = (sales_value + coupon_match_disc) / 
-        quantity,
-      coupon_price  = (sales_value - coupon_disc) / 
-        quantity
-    )
+  mutate(
+    regular_price = (sales_value + retail_disc + coupon_match_disc) / 
+      quantity,
+    loyalty_price = (sales_value + coupon_match_disc) / 
+      quantity,
+    coupon_price  = (sales_value - coupon_disc) / 
+      quantity
+  )
 
 ### Question3 ###
 #The transactions dataset includes 68,509 unique product IDs. How many of these products (not transactions!) had a regular price of one dollar or less? What does this count equal for loyalty price and coupon price?

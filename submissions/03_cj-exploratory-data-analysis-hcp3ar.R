@@ -19,9 +19,10 @@ transactions %>%
   transactions_prices
 
 
-#' Q1 - Determine median weekly spend per individual (not household) using
-#' price_purchase intransactions_prices and household_size in demographics.
- 
+#Question 1: Determine median weekly spend per individual (not household) using price_purchase intransactions_prices and household_size in demographics.
+
+#Because transactions_prices does not contain household metadata, you need to create a new dataset with household information in it. In addition, because household_size is a factor variable, you need to convert it to an integer variable to calculate weekly spend per individual. Consider using the code below for the beginning of the pipe you build for this question.
+
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
   mutate(
@@ -39,8 +40,7 @@ transactions_prices %>%
   )
 
 
-#' Q2 - Building on Question 2, plot median spend per individual by household
-#' size.
+#Question 2: Building on Question 1, plot median spend per individual by household size.
 
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
@@ -61,20 +61,14 @@ transactions_prices %>%
   geom_col()
 
 
-#' Q3 - Are baskets with diapers in them more likely than average to have beer
-#' in them, too? Legend has it that placing these two product categories closer
-#' together can increase beer sales (Powers 2002). Using the following starter
-#' code, calculate lift for the “association rule” that diapers in a basket
-#' (i.e., product_type == "BABY DIAPERS") imply that beer is in the basket
-#' (i.e., product_type == "BEERALEMALT LIQUORS"). Does the association between
-#' these products offer support for the legend?
- 
+#Question 3: Are baskets with diapers in them more likely than average to have beer in them, too? Legend has it that placing these two product categories closer together can increase beer sales (Powers 2002). Using the following starter code, calculate lift for the “association rule” that diapers in a basket (i.e., product_type == "BABY DIAPERS") imply that beer is in the basket (i.e., product_type == "BEERALEMALT LIQUORS"). Does the association between these products offer support for the legend?
+  
 transactions_prices %>% 
   inner_join(products, by = "product_id") %>% 
   mutate(
     diapers = product_type == "BABY DIAPERS", 
     beer    = product_type == "BEERALEMALT LIQUORS"
-  ) %>% 
+  ) %>%
   group_by(basket_id) %>%
   summarize(
     basket_has_diapers = max(diapers), 
@@ -88,11 +82,10 @@ transactions_prices %>%
   )
 
 
-#' Q4 - Using a stacked bar chart that is partitioned by income level (i.e.,
-#' income), visualize the total amount of money that households in the Complete
-#' Journey Study spent on national-brand products versus private-label products
-#' (i.e., brand).
- 
+#Question 4: Using a stacked bar chart that is partitioned by income level (i.e., income), visualize the total amount of money that households in the Complete Journey Study spent on national-brand products versus private-label products (i.e., brand).
+
+#Because transactions_prices does not contain household or product metadata, you need to create a new dataset with this information in it. Consider using the code below for the beginning of the pipe you build for this question.
+
 transactions_prices %>% 
   left_join(demographics, by = "household_id") %>% 
   left_join(products, by = "product_id") %>% 
