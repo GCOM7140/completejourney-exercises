@@ -1,42 +1,37 @@
+#Erin McMahon
 library(tidyverse)
 library(completejourney)
 library(lubridate)
 
-# Question 1: What percent of households that received the retailer’s weekly mailer redeemed at least one coupon?
-
+#Question 1
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
   coupon_redemptions %>% count(household_id, name = "n_redemptions"), 
   by = "household_id"
 ) %>% 
   summarize(redemption_rate = mean(!is.na(n_redemptions)))
+# Of the 1,559 households that were mailed coupons as part of a campaign, 410
+# (or 26.3%) redeemed a coupon.
 
-# only 26.3% of people redeemed at least one coupon
-
-# Question 2: How many households received and did not redeem a coupon?
-
+#Question 2
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
   coupon_redemptions %>% count(household_id, name = "n_redemptions"), 
   by = "household_id"
 ) %>% 
   summarize(redemption_rate = sum(is.na(n_redemptions)))
+# 1,149 households received and did not redeem a coupon.
 
-#1149 people received and did not use a coupon
-
-# Question 3: What percentage of coupons promoted in the retailer’s weekly mailer got redeemed at least once?
-
+#Question 3
 left_join(
   coupons            %>% count(coupon_upc, name = "n_products", sort = TRUE),
   coupon_redemptions %>% count(coupon_upc, name = "n_redemptions"), 
-  by = "coupon_upc"
-  ) %>% 
+  by = "coupon_upc") %>% 
   summarize(redemption_rate = sum(!is.na(n_redemptions)))
+# Of the 981 coupons promoted in the retailer's weekly mailer, 491 (or 50%) of
+# them were redeemed at least once.
 
-# 491 people did not use a coupon they received
-
-# Question 4: Considering the product categories that the 801 households in the Complete Journey Study purchased most heavily, which five categories did they start spending more on at the highest rate over the course of Q1? Only consider product categories that the group spent $1,500 or more on in January, and calculate spend growth as a percentage of category spend in January.
-
+#Question 4
 transactions %>% 
   left_join(products, by = "product_id") %>%
   mutate(month = month(transaction_timestamp, label = TRUE)) %>%
@@ -52,17 +47,10 @@ transactions %>%
   arrange(desc(spend_growth_pct)) %>% 
   select(product_category, spend_growth_pct) %>% 
   head(5)
-
-# In Q1 they spend 53.4% more on Baby formula as their largest increase in purchases. The other top contendors include Seafood, Candy, Oral Hygine Products and Domestic Wine
-
-
-
-
-
-
-
-
-
-
+# From January to March, the 2,469 households in the Complete Journey Study
+# increased their spend on infant formula by 53.4 percent. They spent almost 30
+# percent more on frozen seafood, just over 23 percent more on packaged candy,
+# nearly 20 percent more on oral hygiene products, and 13.5 percent more on
+# domestic wine.
 
 
