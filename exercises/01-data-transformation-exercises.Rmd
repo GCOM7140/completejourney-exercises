@@ -4,7 +4,12 @@ output: github_document
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  include = FALSE,
+  eval    = FALSE,
+  warning = FALSE, 
+  message = FALSE
+)
 ```
 
 The following questions are based on concepts covered in [Chapter 5][chapter 5]
@@ -12,19 +17,19 @@ of R4DS, and answers to them lie in the `transactions` dataset of the
 completejourney package. Load the tidyverse and completejourney packages to
 start working on them.
 
-```{r load-packages, warning = FALSE, message = FALSE}
+```{r include = TRUE}
 library(tidyverse)
 library(completejourney)
 ```
 
-**Note**: If printing the completjourney package's datasets to the console is
+If printing the completjourney package's datasets to the console is
 throwing you a warning that 'along' is being autocompleted as 'along.with', you
 might want to toggle `warnPartialMatchArgs` off. Jenny Bryan writes that she has
 been doing this a lot of late [here][jenny on github]. When the next version of
 R is released, the bug causing this error will be fixed. For now, you can toggle
 `warnPartialMatchArgs` off with:
 
-```{r}
+```{r include = TRUE}
 options(warnPartialMatchArgs = FALSE)
 ```
 
@@ -33,12 +38,12 @@ options(warnPartialMatchArgs = FALSE)
 **Question 1**: Change the discount variables (i.e., `retail_disc`, 
 `coupon_disc`, `coupon_match_disc`) from negative to positive. 
 
-**Hint:** Use the `abs()` function within [`mutate()`][mutate]. 
+Use the `abs()` function within [`mutate()`][mutate]. 
 
 We designed this question to strengthen your ability to use the dplyr verb
 [`mutate()`][mutate] for the purposes of overwriting existing variables.
 
-```{r include = FALSE}
+```{r}
 transactions <- transactions %>% 
   mutate(
     retail_disc       = abs(retail_disc),
@@ -52,7 +57,7 @@ transactions <- transactions %>%
 **Question 2**: Create three new variables named `regular_price`, 
 `loyalty_price`, and `coupon_price` according to the following logic:
 
-```{r eval = FALSE}
+```{r}
 regular_price = (sales_value + retail_disc + coupon_match_disc) / quantity
 loyalty_price = (sales_value + coupon_match_disc) / quantity
 coupon_price  = (sales_value - coupon_disc) / quantity
@@ -62,8 +67,8 @@ We designed this question to strengthen your ability to use the dplyr verb
 [`mutate()`][mutate] to create new variables. It should also help you develop a
 better understanding of the discount variables in `transactions`.
 
-```{r include = FALSE}
-(transactions <- transactions %>% 
+```{r}
+transactions <- transactions %>% 
   mutate(
     regular_price = (sales_value + retail_disc + coupon_match_disc) / 
                      quantity,
@@ -72,7 +77,6 @@ better understanding of the discount variables in `transactions`.
     coupon_price  = (sales_value - coupon_disc) / 
                      quantity
   )
-)
 ```
 
 ---
@@ -81,13 +85,13 @@ better understanding of the discount variables in `transactions`.
 How many of these products (not transactions!) had a regular price of one dollar
 or less? What does this count equal for loyalty price and coupon price?
 
-**Hint:** After filtering, select the `product_id` column, then count the number
+After filtering, select the `product_id` column, then count the number
 of unique products using the `n_distinct()` function.
 
 We designed this question to strengthen your ability to use the dplyr verbs
 [`filter()`][filter] and [`select()`][select].
 
-```{r include = FALSE}
+```{r}
 transactions %>% 
   filter(regular_price <= 1) %>% 
   select(product_id) %>% 
@@ -117,7 +121,7 @@ transactions %>%
 
 **Question 4**: What proportion of baskets are over $10 in sales value? 
 
-**Hint:** You need to use [`group_by()`][summarize], [`summarize()`][summarize],
+You need to use [`group_by()`][summarize], [`summarize()`][summarize],
 and [`ungroup()`][ungroup]. As a last step, you can calculate the proportion by
 taking the mean of `TRUE/FALSE` values, using `mean(basket_value > 10)` to get
 the proportion over $10.
@@ -126,7 +130,7 @@ We designed this question to strengthen your ability to use the dplyr verbs
 [`group_by()`][summarize], [`summarize()`][summarize] and
 [`ungroup()`][ungroup].
 
-```{r include = FALSE}
+```{r}
 transactions %>%
   group_by(basket_id) %>%
   summarize(basket_value = sum(sales_value)) %>%
@@ -141,10 +145,10 @@ transactions %>%
 **Question 5**: Which store with over $10K in total `sales_value` discounts its 
 products the most for loyal customers? 
 
-**Hint:** You can calculate loyalty discount as a percentage of regular price 
+You can calculate loyalty discount as a percentage of regular price 
 using the following logic:
 
-```{r eval = FALSE}
+```{r}
 pct_loyalty_disc = 1 - (loyalty_price / regular_price)
 ```
 
@@ -153,7 +157,7 @@ We designed this question to strengthen your ability to use the dplyr verbs
 [`summarize()`][summarize], and [`arrange()`][arrange] (i.e., 
 almost everything covered in [Chapter 5][chapter 5] of R4DS).
 
-```{r include = FALSE}
+```{r}
 transactions %>%
   filter(
     is.finite(regular_price), 
