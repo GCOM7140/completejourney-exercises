@@ -39,11 +39,12 @@ transactions %>%
   group_by(product_category, month) %>%
   summarize(spend_tot = sum(sales_value, na.rm = TRUE)) %>%
   filter(month == "Jan" | month == "Mar") %>%
-  group_by(product_category) %>% 
-  mutate(spend_growth_pct = (spend_tot - lag(spend_tot)) / lag(spend_tot) * 100,
+  mutate(
+    spend_growth_pct = (spend_tot - lag(spend_tot)) / lag(spend_tot) * 100,
     spend_jan = first(spend_tot)) %>% 
   filter(spend_jan >= 1500) %>% 
   arrange(desc(spend_growth_pct)) %>% 
-  select(product_category, spend_growth_pct)
+  select(product_category, spend_growth_pct) %>%
+  head(5)
 
 #Infant formula, frozen seafood, packaged candy, oral hygine products, domestic wine 
