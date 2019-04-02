@@ -18,7 +18,7 @@ transactions %>%
   ) -> 
   transactions_prices
 
-#Question 1#
+#1
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
   mutate(
@@ -42,14 +42,9 @@ transactions_prices %>%
     spend_wkly_per_ind_med = median(spend_wkly_per_ind, na.rm = TRUE)
   )
 
-## # A tibble: 1 x 1
-##   spend_wkly_per_ind_med
-##                    <dbl>
-## 1                   44.2
-# Median weekly spend is $44.20.
+# 44.2
 
-#Question 2#
-
+#2
 transactions_prices %>%
   inner_join(demographics, by = "household_id") %>% 
   mutate(
@@ -68,10 +63,7 @@ transactions_prices %>%
   ggplot(aes(x = household_size, y = spend_wkly_per_ind_med)) +
   geom_col()
 
-# nice bar chart
-
-#Question 3#
-
+#3
 transactions_prices %>% 
   inner_join(products, by = "product_id") %>% 
   mutate(
@@ -97,12 +89,9 @@ transactions_prices %>%
     diaper_lift = prop_both / prob_beer
   )
 
-# the complete journey data do not bear out the parable of beer and diapers, as
-# the lift of 1 suggests that the probability of a customer having diapers in a
-# basket and that of them having beer in a basket are independent of each other.
+# No
 
-#Question 4#
-
+#4
 transactions_prices %>% 
   left_join(demographics, by = "household_id") %>% 
   left_join(products, by = "product_id")
@@ -115,6 +104,3 @@ transactions_prices %>%
   ggplot(mapping = aes(x = income, y = spend_total, fill = brand)) +
   geom_col(position = "fill") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# nice figures
-

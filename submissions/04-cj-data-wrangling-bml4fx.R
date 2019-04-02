@@ -2,7 +2,7 @@ library(tidyverse)
 library(completejourney)
 library(lubridate)
 
-# Question 1: What percent of households that received the retailer’s weekly mailer redeemed at least one coupon?
+#1
 
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
@@ -11,9 +11,9 @@ left_join(
 ) %>% 
   summarize(redemption_rate = mean(!is.na(n_redemptions)))
 
-# only 26.3% of people redeemed at least one coupon
+ # 26.3%
 
-# Question 2: How many households received and did not redeem a coupon?
+#2
 
 left_join(
   campaigns          %>% count(household_id, name = "n_recipients"),
@@ -22,20 +22,19 @@ left_join(
 ) %>% 
   summarize(redemption_rate = sum(is.na(n_redemptions)))
 
-#1149 people received and did not use a coupon
+# 1,149
 
-# Question 3: What percentage of coupons promoted in the retailer’s weekly mailer got redeemed at least once?
+#3
 
 left_join(
   coupons            %>% count(coupon_upc, name = "n_products", sort = TRUE),
   coupon_redemptions %>% count(coupon_upc, name = "n_redemptions"), 
-  by = "coupon_upc"
-  ) %>% 
+  by = "coupon_upc") %>% 
   summarize(redemption_rate = sum(!is.na(n_redemptions)))
 
-# 491 people did not use a coupon they received
+# 50%
 
-# Question 4: Considering the product categories that the 801 households in the Complete Journey Study purchased most heavily, which five categories did they start spending more on at the highest rate over the course of Q1? Only consider product categories that the group spent $1,500 or more on in January, and calculate spend growth as a percentage of category spend in January.
+#4
 
 transactions %>% 
   left_join(products, by = "product_id") %>%
@@ -53,16 +52,4 @@ transactions %>%
   select(product_category, spend_growth_pct) %>% 
   head(5)
 
-# In Q1 they spend 53.4% more on Baby formula as their largest increase in purchases. The other top contendors include Seafood, Candy, Oral Hygine Products and Domestic Wine
-
-
-
-
-
-
-
-
-
-
-
-
+# Infant formula, frozen seafood, packaged candy, oral hygiene products, domestic wine.
