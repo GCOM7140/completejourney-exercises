@@ -84,8 +84,13 @@ transactions_prices %>%
 
 -----
 
-**Question 2**: Building on Question 2, plot median spend per individual
-by household size.
+**Question 2**: As Hadley and Garrett outline in
+[Chapter 7](http://r4ds.had.co.nz/exploratory-data-analysis.html), EDA
+is an iterative cycle. Suppose that based on what you learned in
+Question 1, you want to know what the median spend per individual is for
+different household sizes. How could you plot median spend per
+individual by household size to answer this new question with a
+visualization?
 
 ``` r
 transactions_prices %>%
