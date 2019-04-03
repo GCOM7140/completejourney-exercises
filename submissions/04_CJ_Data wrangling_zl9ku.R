@@ -1,3 +1,10 @@
+#'---
+#'title: "Answers to the data wrangling exercise"
+#'author: Roy Luo
+#'date: 04/01/19
+#'documen: github_document 
+#'---
+
 library(tidyverse)
 library(completejourney)
 library(lubridate)
@@ -10,8 +17,7 @@ left_join(
   by = "household_id"
 ) %>% 
   summarize(redemption_rate = mean(!is.na(n_redemptions)))
-
-# only 26.3% of people redeemed at least one coupon
+# 26.3%
 
 # Question 2: How many households received and did not redeem a coupon?
 
@@ -21,19 +27,16 @@ left_join(
   by = "household_id"
 ) %>% 
   summarize(redemption_rate = sum(is.na(n_redemptions)))
-
-#1149 people received and did not use a coupon
+# 1149 households did not redeem a coupon
 
 # Question 3: What percentage of coupons promoted in the retailer’s weekly mailer got redeemed at least once?
 
 left_join(
   coupons            %>% count(coupon_upc, name = "n_products", sort = TRUE),
   coupon_redemptions %>% count(coupon_upc, name = "n_redemptions"), 
-  by = "coupon_upc"
-  ) %>% 
+  by = "coupon_upc") %>% 
   summarize(redemption_rate = sum(!is.na(n_redemptions)))
-
-# 491 people did not use a coupon they received
+# 50% (491 out of 981) of them were redeemed at least once 
 
 # Question 4: Considering the product categories that the 801 households in the Complete Journey Study purchased most heavily, which five categories did they start spending more on at the highest rate over the course of Q1? Only consider product categories that the group spent $1,500 or more on in January, and calculate spend growth as a percentage of category spend in January.
 
@@ -53,16 +56,9 @@ transactions %>%
   select(product_category, spend_growth_pct) %>% 
   head(5)
 
-# In Q1 they spend 53.4% more on Baby formula as their largest increase in purchases. The other top contendors include Seafood, Candy, Oral Hygine Products and Domestic Wine
-
-
-
-
-
-
-
-
-
-
-
-
+# (From January to March )
+# infant formula 53.4% more 
+# frozen seafood 30% more 
+# packaged candy 23% more
+# oral hygiene products 19.5% more
+# domestic wine 13.5% more

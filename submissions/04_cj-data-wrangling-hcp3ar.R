@@ -41,7 +41,7 @@ left_join(
   summarize(redemption_rate = mean(!is.na(n_redemptions)))
 
   
-#' **Question 4**: Considering the product categories that the 801 households in the Complete Journey Study purchased most heavily, which five categories did they start spending more on at the highest rate over the course of Q1? Only consider product categories that the group spent $1,500 or more on in January, and calculate spend growth as a percentage of category spend in January.
+#' **Question 4**: Considering the product categories that the 801 households in the Complete Journey Study purchased most heavily, which five categories did they start spending more on at the highest rate over the course of Q1 (Jan, Feb, Mar)? Only consider product categories that the group spent $1,500 or more on in January, and calculate spend growth as a percentage of category spend in January.
 
 transactions %>% 
   left_join(products, by = "product_id") %>%
@@ -49,19 +49,20 @@ transactions %>%
   group_by(product_category, month) %>%
   summarize(spend_tot = sum(sales_value, na.rm = TRUE)) %>%
   filter(month == "Jan" | month == "Mar") %>%
-  group_by(product_category) %>% 
   mutate(
     spend_growth_pct = (spend_tot - lag(spend_tot)) / lag(spend_tot) * 100,
     spend_jan = first(spend_tot)
   ) %>% 
   filter(spend_jan >= 1500) %>% 
   arrange(desc(spend_growth_pct)) %>% 
-  select(product_category, spend_growth_pct) %>% 
+  select(product_category, spend_growth_pct) %>%
   head(5)
 
+#Useful examples of nth() function: 
+v <- c(5, 3, 6)
 
-
-
+nth(v, 2)
+nth(v, -3)
 
 
 
